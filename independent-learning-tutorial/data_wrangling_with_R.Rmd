@@ -1,0 +1,792 @@
+---
+title: "Data Wrangling with R"
+author: Dr. Laurie Baker, Ian Banda
+output:
+  html_document: 
+    theme: united
+    highlight: tango
+    toc: yes
+    toc_float: yes
+    number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r, echo=FALSE}
+htmltools::img(src = knitr::image_uri("../images/dsc_logo.png"),
+               alt = 'logo', 
+               style = 'position:absolute; top:0; right:0; padding:10px; width:200px;')
+```
+
+
+<br>
+
+# Learning Objectives
+
+<br>
+
+**The goal of this session is to:**
+
+* Be familiar with project organisation
+* Be able to import data from multiple formats
+* Be able to inspect loaded data and select elements within the data frame
+* Be able to export data
+* Be able to identify missing data
+
+
+***
+
+<br>
+
+# Projects
+
+It is highly recommended to manage your R work in "projects". When you’re starting work on a new project, choose **‘New project…’** from the File menu and **‘New Directory’** to create a directory for the project.
+
+
+If you already have data related to the project in an existing directory, you can choose that option instead.
+
+
+To work on this project in the future, you can select **‘Open Project…’** or **‘Recent Projects’** from the File menu and browse to open the desired project.
+
+This will ensure that your working directory will be set to the project folder, meaning you won’t have to worry about full file paths for data you are reading in or writing to that same folder.
+
+
+
+It is good practice to organise your folders. 
+
+As shown in the example below, where you include all files to a project in the same folder `Project A`
+
+<br>
+
+![](../images/level1.PNG)
+
+<br>
+
+Within the folder, it is good practice to further organise your files within folders, as shown below.
+
+* The data folder would contain your raw and processed data.
+
+* Images would contain any photos you are using.
+
+* Scripts would contain all the R files. You don't have to stick with this exact folder structure, you could add in additional folders, for example an output folder.
+
+<br>
+
+![](../images/level2.PNG)
+
+
+
+## tidyverse Breakdown{-}
+
+Below is a list of the core packages in `tidyverse` to provide some awareness into what they make possible:
+
+* [`readr`](http://readr.tidyverse.org) - Data Import,
+* [`tibble`](https://tibble.tidyverse.org/) - `Tibbles`, a modern re-imagining of data frames,
+* [`tidyr`](https://tidyr.tidyverse.org/) - Data Tidying,
+* [`dplyr`](https://dplyr.tidyverse.org/) - General Data Manipulation,
+* [`stringr`](https://stringr.tidyverse.org/) - Strings Manipulation,
+* [`forcats`](https://forcats.tidyverse.org/) - Factors Manipulation,
+* [`ggplot2`](https://ggplot2.tidyverse.org/) - Data Visualisation,
+* [`purrr`](https://purrr.tidyverse.org/) - Functional Programming,
+* [`lubridate`](https://lubridate.tidyverse.org/) - Functional Programming,
+
+
+Note: The majority of the 'heavy lifting', with respect to data manipulation and exploration, will be done through the functions available through the `tidyverse` libraries. On some occasions, we will be using functions from other libraries.
+
+
+![\Image showing visual representation of tidyverse packages and workflow](../images/tidyverse.png)
+
+For this adventure we'll be using the `tidyverse` meta package in addition to the packages `janitor`, `visdat`, `naniar` for data cleaning and working with and visualising missing data.
+
+```{r}
+#install.packages("tidyverse")
+#install.packages("janitor")
+#install.packages("visdat")
+#install.packages("naniar")
+
+library(tidyverse)
+library(janitor)
+library(visdat)
+library(naniar)
+
+
+```
+
+
+
+# Functions
+
+We have now used a few functions, we will go through a little bit more information about how they work.
+
+You should make it a habit to check out the help files when you are using a function for the first time so you know what the default settings are and to see what things you can control with different function arguments.
+
+You can check the helpfile by using either a single ? followed by the function name or a double ? depending on whether the package where the function is stored is loaded or not.
+
+```{r, eval = FALSE}
+
+?functionName
+
+??functionName
+
+```
+
+
+Functions follow the form:
+
+`functionName(argument1 = value1, argument2 = value2, and so on)`
+
+# Reading in Data
+
+There are a variety of ways of reading data into R. In introduction to R we covered reading in data using the `readr` package. In this course we will go into more depth on how to usee the `readxl` package and `haven` for loading in data from SPSS, Stata, and SAS.
+
+Beyond these packages, there are also several other options for common file types:
+
+* `haven` - SPSS, Stata and SAS files,
+* `DBI` + `dplyr` or `dbplyr` - Databases,
+* `jsonlite` - json files,
+* `httr` - Web APIs,
+* `rvest` - HTML (Web Scraping)
+
+***
+
+<br>
+
+
+## Readr
+
+The package provides a fast and friendly way to read data from *csv* and *tsv* formats, it converts the data into *tibbles*.
+
+For this section we are going to use the **`read_csv()`** function.
+
+Before importing your data you need to know,
+
+* Where it is stored?
+
+* What kind of file it is?
+
+* Are there any missing values in the data (denoted by `na`).
+
+The code below demonstrates how you can read in csv data.
+
+```{r, eval=FALSE}
+# Reading in CSV data using readr package and read_csv function
+
+dataframe_name <- readr::read_csv(file = file_path)
+```
+
+
+<br>
+
+**Things to keep in mind**
+
+`readr` will assume that the first row of your data is the headings of the columns.
+
+`readr` will automatically try and guess the data types in your columns, for example; if a column has only numerical data, it will be classed as numeric or if it only contains logical values it will be classed as logical. If the values do not match then R keeps them as characters. It is good practise to check your column data types, just in case R chose the wrong type automatically.
+
+***
+
+<br>
+
+
+## Example 
+
+Load the titanic data using the code below.
+
+You will need to change the file path to your location.
+
+You will have noticed that we had some parsing information after reading the file in, displayed at the end of the process (as a warning). This is to let us know the data type  for each column. 
+
+This is not an error and its useful to inspect the chosen datatypes. 
+
+```{r}
+# Reading in CSV data using readr package and read_csv function
+
+path <- file.path("data", "titanic.csv")
+
+titanic <- readr::read_csv(file = path)
+
+```
+
+
+To look at the data in R we use the `View` command as below.
+
+
+```{r eval=FALSE}
+# Viewing the data using the View() function
+
+View(titanic)
+```
+
+
+## readxl
+
+We use readxl to read excel data into R, it supports both `.xls` and `.xlsx` formats.
+
+
+The code below demonstrates how you can read excel data.
+
+
+```{r eval=FALSE}
+dataframe_name <- readxl::read_excel(file_path)
+```  
+
+One handy thing to know is the **`excel_sheets()`** function.
+
+As excel files often have multiple sheets, this function will provide the names without having to open the file.
+
+We run this function with the code below:
+
+
+```{r eval=FALSE}
+# To find out the excel sheet names from excel file
+
+readxl::excel_sheets(file_path)
+```
+
+***
+
+<br>
+
+## Example 
+
+
+1. Read in the excel file Police data.
+
+
+```{r, eval = FALSE}
+# Reading in excel data using the readxl package
+# assigning the file name police_data
+# and read_excel function
+
+police_data <- readxl::read_excel("data/police_data.xlsx")
+```
+
+After reading in the file our data should look like this.
+
+<br>
+
+![](../images/police_data_sheet_1.PNG)
+
+<br>
+
+This is the first sheet in our excel which is just the `Notes`.
+
+
+If we dont specify which sheet, the default setting from readxl is to give us the first sheet.
+
+<br>
+
+2. Use the `excel_sheets` function to see the names of the sheets in the police data.
+
+
+
+```{r, eval = FALSE}
+# finding out the excel sheet names from excel file
+
+readxl::excel_sheets("../Data/police_data.xlsx")
+```
+
+***
+
+<br>
+
+
+## Exercise{.tabset .tabset-fade}
+
+
+
+
+### **Exercise**{-}
+
+
+
+1. Can you add an additional argument in the `read_excel` function to read in the second sheet (Table P1) from the police data.
+
+
+**HINT - look at the help documentation, maybe something that talks about "sheet"**
+
+***
+
+<br>
+
+
+### Show Answer{-}
+
+
+You can use the name of the sheet or the number/index. 
+
+
+This would be useful if you have a lot of sheets.
+
+```{r, eval=FALSE}
+
+# Reading in excel data using the readxl package
+# and the read_excel function
+# assigning the file name police_data
+# specifying which sheet to read, here it is the second sheet or Table P1
+
+
+police_data <- readxl::read_excel("Data/police_data.xlsx",
+                                  sheet = 2)
+
+# Alternatively
+
+police_data <- readxl::read_excel("Data/police_data.xlsx",
+                                  sheet = "Table P1")
+
+```
+
+Our file should now look like this,
+
+<br>
+
+![](../images/sheet_2.PNG)
+
+<br>
+
+As we can see the top columns are mostly blank with no real significant data, to get around this we can add in a range of columns and rows that have the data we want to analyse. This sorts out the column names as well.
+
+<br>
+
+```{r, eval = FALSE}
+# Reading in excel data using the readxl package
+# and the read_excel function
+# assigning the file name police_data
+# specifying which sheet to read, here it is the second sheet or Table P1
+# specifying the range to only read the cells with data
+
+
+police_data <- readxl::read_excel("../Data/police_data.xlsx",
+                                  sheet = 2, 
+                                  range = "A5:AA48")
+
+```
+
+<br>
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, eval = FALSE}
+police_data %>% 
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>% 
+  scroll_box(width = "100", height = "700px")
+```
+
+***
+
+<br>
+
+
+# Exporting the Data
+
+When you read a file into R, the data is loaded into memory. This means that any changes you make won't be reflected in the original file you loaded. If you want to preserve the changes you make to the dataset you have to export the data object to a file.
+
+Exporting tables works in much the same way as importing it.
+
+`readr` allows us to export to csv file type or equivalent using the **`write.csv()`** function.
+
+As an example we will export the police data we just imported.
+
+```{r, eval=FALSE}
+# Exporting data using the readr package 
+# and write_csv function, we start with file we want to export
+# and the the path where we want to export it to
+
+readr::write_csv(police_data, path = "../Data/test.csv")
+```
+
+Our data frame `police_data` would now be stored as `test.csv` in the `Data/` folder.
+
+***
+
+<br>
+
+
+# Tidying Data
+
+
+## Tidying up our names using the `janitor` package
+
+The package `janitor` has several useful functions for cleaning data. We can use the function `clean_names` to tidy up our variable names and to ensure that they follow an appropriate naming convention. In this case the default is snake_case, but we can alter this by changing the argument `case = `
+
+```{r}
+
+titanic <- janitor::clean_names(titanic)
+
+names(titanic)
+
+```
+
+Let's load in the gapminder data we've looked at before
+
+### Prepping the gapminder data
+
+Let's go back to the gapminder data set we've worked with before. First let's load in the data:
+
+```{r}
+
+my_file <- file.path("data", "gapminder.csv")
+
+gapminder <- read_csv(file = my_file)
+
+```
+
+
+### Exercise{.tabset .tabset-fade .tabset-fade}
+
+
+
+#### **Exercise**{-}
+
+
+Fill in the blanks to tidy up the names of the gapminder code
+
+```{r, eval = FALSE}
+
+gapminder <- ________(gapminder)
+
+```
+
+
+
+***
+
+<br>
+
+#### **Hint**{-}
+
+Take a look above at how we cleaned the names of the titanic dataset using the `janitor` package.
+
+***
+
+<br>
+
+#### **Show Answer**{-}
+
+We can use the function `clean_names()` from the janitor package
+
+```{r}
+
+gapminder <- clean_names(gapminder)
+
+```
+
+
+***
+
+
+# Quality assurance
+
+## Missing Data
+
+Missing data is a common occurrence in data science. We can use the packages `naniar` and `visdat` to inspect and visualise our missing data. 
+
+These packages can help us to visualise the types of data we have and to also identify where we have missing data. The `visdata` package provides a visualisation of an entire data frame at once. 
+
+
+```{r}
+
+vis_dat(titanic)
+
+```
+
+From the plot above, which column is missing the most information?
+
+
+
+### Exercise{.tabset .tabset-fade .tabset-fade}
+
+
+
+#### **Exercise**{-}
+
+
+From the plot above, which column is missing the most information?
+
+
+***
+
+<br>
+
+#### **Hint**{-}
+
+Take a look at the legend and then back to the graph. Which column has the most greyed out observations which represent missing data ("NA")? 
+
+***
+
+<br>
+
+#### **Show Answer**{-}
+
+The variable `cabin` has the most data missing. 
+
+
+***
+
+<br>
+
+### Percentage of data that is missing
+
+If we want to look at the percentage of data that is missing for each column and overall, we can use the function `vis_miss`
+
+```{r}
+
+vis_miss(titanic)
+
+```
+
+Using `naniar` we can explore missing data further using functions like `gg_miss_var` that work with `ggplot`.
+
+```{r Visualising how many observations are missing}
+
+gg_miss_var(titanic)
+
+```
+
+
+### Exploring mechanisms of missing data
+
+We can identifying using `vis_miss` the key variables that are missing data, however it is important to explore the relationship amongst the variables in the dataset. 
+
+For example we might wish to explore whether the information we have about cabins is missing for certain fares. We can look to see whether there are any patterns in the data by creating a colour for 
+
+```{r}
+
+titanic %>%
+      mutate(
+        missing_cabin = is.na(cabin)
+      ) %>%
+      ggplot(titanic, mapping = aes(fare)) +
+        geom_freqpoly(aes(colour = missing_cabin), binwidth = 1/4)
+
+```
+
+
+# Exploring relationship with missing data (data missing from various sources).
+
+
+By default, `ggplot` does not handle missing data. This makes it hard to explore and to know where data is missing. This leads to the question "how do you visualise something that is not there"? One approach is to replace "NA" values with values 10% lower than the minimum value in that variable. 
+
+
+We can visualise what data is missing using
+
+```{r}
+
+vis_dat(gapminder)
+
+```
+
+
+We will revisit this later on in the data visualisation course but a quick plot we can use is:
+
+```{r}
+
+
+
+ggplot(gapminder,
+    aes(x = fertility,
+        y = infant_mortality)) +
+    geom_point(alpha = 0.5)
+
+```
+
+```{r}
+
+
+
+ggplot(gapminder,
+    aes(x = fertility,
+        y = infant_mortality)) +
+  geom_miss_point(alpha = 0.5)
+
+```
+
+We may wish to explore by continent
+
+```{r}
+
+ggplot(gapminder,
+    aes(x = fertility,
+        y = infant_mortality)) +
+  geom_miss_point(alpha = 0.5) +
+  facet_wrap(~continent)
+
+```
+
+
+
+
+### Exercise{.tabset .tabset-fade .tabset-fade}
+
+
+
+#### **Exercise**{-}
+
+Fill in the blank to update the plot code to look at the year.
+
+
+```{r, eval = FALSE}
+
+ggplot(gapminder,
+    aes(x = fertility,
+        y = infant_mortality)) +
+  geom_miss_point(alpha = 0.5) +
+  facet_wrap(~_______)
+
+```
+
+
+***
+
+<br>
+
+#### **Hint**{-}
+
+Take a look at the example with continent. If we need to check our spelling we can check how year appears in our dataset using `names(gapminder)`
+
+```{r}
+
+names(gapminder)
+
+```
+
+
+***
+
+<br>
+
+#### **Show Answer**{-}
+
+Just as we did when exploring the missing data by continent, we can do the same with year.
+
+```{r}
+
+ggplot(gapminder,
+    aes(x = fertility,
+        y = infant_mortality)) +
+  geom_miss_point(alpha = 0.5) +
+  facet_wrap(~year)
+
+```
+
+What do you notice from the plot?
+
+***
+
+
+
+### What to do with missing values
+
+We'll cover what to do with missing values in a later section. First we need to understand the missingness types:
+
+There are three types of missing data:
+
+* **MCAR**: Missing Completely at Random
+* **MAR**: Missing at Random
+* **MNAR**: Missing Not at Random
+
+The different types of missing have different implications.
+
+|Type   |Imputation   |Deletion   | Visual cues   |
+|---|---|---|---|
+| MCAR  |Recommended   | Will not lead to bias   |  May lead to bias | Well-defined missingness clusters when arranging for a particular variable(s) |
+| MAR  | Recommended | May lead to bias | Well-defined missingness clusters when arranging for a particular variable(s)   |
+|  MNAR | Will lead to bias   | Will lead to bias   | Neither visual pattern above holds   |
+
+
+<!-- You can then look at a dataset with missing values and evaluate the imputation model. This would involve internal evaluation, comparing distributions with and without imputed values (e.g. Mean, Variance, and Scale) and also external evaluation, where you build a model and then evaluate the impact of the imputation method on Machine Learning model performance.  -->
+
+
+# Formatting data in a tidy format
+
+
+Tabular data is a set of values, where each **value** is placed in its own “cell”, each **variable** in its own column, and each **observation** in its own row. The book [*R for Data Science*](https://r4ds.had.co.nz/) by Garrett Grolemund and Hadley Wickham is a great resource when thinking about tidying data. Here, we use some of the definitions they set out in the book to describe tidy data. 
+
+**Some definitions for tidy data**:
+
+ * A **variable** is a quantity, quality, or property that you can measure.
+
+ * A **value** is the state of a variable when you measure it. The value of a variable may change from measurement to measurement.
+
+ * An **observation** is a set of measurements made under similar conditions (you usually make all of the measurements in an observation at the same time and on the same object). An observation will contain several values, each associated with a different variable.
+
+  * In R, the `dplyr` package makes it easy to format your data in a tabular format. 
+  
+
+![](../images/tidy_iris_example.png){width=750px}
+
+### Exercise{.tabset .tabset-fade .tabset-fade}
+
+
+
+#### **Exercise**{-}
+
+Take a look at the titanic data.
+
+* What are the variables?
+* What is an example of a value?
+* What are the observations?
+
+
+***
+
+<br>
+
+#### **Hint**{-}
+
+Remember that in a tidy data set, **variables** are the columns, a **value** is a cell, and an **observation** is a set of measurments made under similar conditions or related to a certain entity (e.g. in the case of the iris dataset a single flower).
+
+***
+
+<br>
+
+#### **Show Answer**{-}
+
+In this case the **variables** are 
+
+```{r}
+names(titanic)
+```
+
+A value would be a single value of one of theese variables, e.g. 
+
+```{r}
+titanic[1,"name_of_passenger"]
+```
+
+And the observation would be all of the information recorded for a single person:
+
+```{r}
+
+titanic %>%
+  filter(name_of_passenger == "Allen, Miss. Elisabeth Walton")
+
+```
+
+
+***
+
+
+<br>
+
+## Untidy data
+
+```{r}
+
+data(billboard)
+
+head(billboard)
+
+```
+
+
+
+# Acknowledgements
+
+
+***
+
+Original content developed by the Office for National Statistics (ONS) Learning Academy.
+
+*** 
+ 
