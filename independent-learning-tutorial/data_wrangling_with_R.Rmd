@@ -1,6 +1,6 @@
 ---
 title: "Data Wrangling with R"
-author: Dr. Laurie Baker, Ian Banda
+author: Dr. Laurie Baker
 output:
   html_document: 
     theme: united
@@ -109,7 +109,6 @@ Other tidyverse packages worth looking into are:
 
 
 Note: The majority of the 'heavy lifting', with respect to data manipulation and exploration, will be done through the functions available through the `tidyverse` libraries. On some occasions, we will be using functions from other libraries.
-
 
 ![\Image showing visual representation of tidyverse packages and workflow](../images/tidyverse.png)
 
@@ -253,11 +252,11 @@ readxl::excel_sheets(file_path)
 
 
 ```{r, eval = FALSE}
-# Reading in excel data using the readxl package
-# assigning the file name police_data
-# and read_excel function
 
-police_data <- readxl::read_excel("../data/police_data.xlsx")
+file_path <- file.path("../data", "police_data.xlsx")
+
+police_data <- readxl::read_excel(path = file_path)
+
 ```
 
 After reading in the file our data should look like this.
