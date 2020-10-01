@@ -12,7 +12,12 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+library(kableExtra)
+library(lubridate)
+
 ```
+
 ```{r, echo=FALSE}
 htmltools::img(src = knitr::image_uri("../images/dsc_logo.png"),
                alt = 'logo', 
@@ -77,19 +82,30 @@ Within the folder, it is good practice to further organise your files within fol
 
 
 
-## tidyverse Breakdown{-}
+## Packages for this adventure
 
-Below is a list of the core packages in `tidyverse` to provide some awareness into what they make possible:
+Below is a list of the core packages in `tidyverse` and others that we will be using in this session:
 
 * [`readr`](http://readr.tidyverse.org) - Data Import,
-* [`tibble`](https://tibble.tidyverse.org/) - `Tibbles`, a modern re-imagining of data frames,
 * [`tidyr`](https://tidyr.tidyverse.org/) - Data Tidying,
 * [`dplyr`](https://dplyr.tidyverse.org/) - General Data Manipulation,
+* [`ggplot2`](https://ggplot2.tidyverse.org/) - Data Visualisation
+
+We will also be using
+* [`lubridate`](https://lubridate.tidyverse.org/) - working with dates,
+* [`janitor`](https://lubridate.tidyverse.org/) - cleaning data
+* [`naniar`]() - working with missing data,
+* [`visdat`]() - visualising missing data,
+
+
+
+
+Other tidyverse packages worth looking into are:
+
 * [`stringr`](https://stringr.tidyverse.org/) - Strings Manipulation,
 * [`forcats`](https://forcats.tidyverse.org/) - Factors Manipulation,
-* [`ggplot2`](https://ggplot2.tidyverse.org/) - Data Visualisation,
-* [`purrr`](https://purrr.tidyverse.org/) - Functional Programming,
-* [`lubridate`](https://lubridate.tidyverse.org/) - Functional Programming,
+* [`purrr`](https://purrr.tidyverse.org/) - Functional Programming
+
 
 
 Note: The majority of the 'heavy lifting', with respect to data manipulation and exploration, will be done through the functions available through the `tidyverse` libraries. On some occasions, we will be using functions from other libraries.
@@ -104,37 +120,19 @@ For this adventure we'll be using the `tidyverse` meta package in addition to th
 #install.packages("janitor")
 #install.packages("visdat")
 #install.packages("naniar")
+#install.packages("lubridate")
 
 library(tidyverse)
 library(janitor)
 library(visdat)
 library(naniar)
+library(lubridate)
 
 
 ```
 
 
 
-# Functions
-
-We have now used a few functions, we will go through a little bit more information about how they work.
-
-You should make it a habit to check out the help files when you are using a function for the first time so you know what the default settings are and to see what things you can control with different function arguments.
-
-You can check the helpfile by using either a single ? followed by the function name or a double ? depending on whether the package where the function is stored is loaded or not.
-
-```{r, eval = FALSE}
-
-?functionName
-
-??functionName
-
-```
-
-
-Functions follow the form:
-
-`functionName(argument1 = value1, argument2 = value2, and so on)`
 
 # Reading in Data
 
@@ -202,7 +200,7 @@ This is not an error and its useful to inspect the chosen datatypes.
 ```{r}
 # Reading in CSV data using readr package and read_csv function
 
-path <- file.path("data", "titanic.csv")
+path <- file.path("../data", "titanic.csv")
 
 titanic <- readr::read_csv(file = path)
 
@@ -259,7 +257,7 @@ readxl::excel_sheets(file_path)
 # assigning the file name police_data
 # and read_excel function
 
-police_data <- readxl::read_excel("data/police_data.xlsx")
+police_data <- readxl::read_excel("../data/police_data.xlsx")
 ```
 
 After reading in the file our data should look like this.
@@ -284,7 +282,7 @@ If we dont specify which sheet, the default setting from readxl is to give us th
 ```{r, eval = FALSE}
 # finding out the excel sheet names from excel file
 
-readxl::excel_sheets("../Data/police_data.xlsx")
+readxl::excel_sheets("../data/police_data.xlsx")
 ```
 
 ***
@@ -327,12 +325,12 @@ This would be useful if you have a lot of sheets.
 # specifying which sheet to read, here it is the second sheet or Table P1
 
 
-police_data <- readxl::read_excel("Data/police_data.xlsx",
+police_data <- readxl::read_excel("../data/police_data.xlsx",
                                   sheet = 2)
 
 # Alternatively
 
-police_data <- readxl::read_excel("Data/police_data.xlsx",
+police_data <- readxl::read_excel("../data/police_data.xlsx",
                                   sheet = "Table P1")
 
 ```
@@ -349,7 +347,7 @@ As we can see the top columns are mostly blank with no real significant data, to
 
 <br>
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 # Reading in excel data using the readxl package
 # and the read_excel function
 # assigning the file name police_data
@@ -357,7 +355,7 @@ As we can see the top columns are mostly blank with no real significant data, to
 # specifying the range to only read the cells with data
 
 
-police_data <- readxl::read_excel("../Data/police_data.xlsx",
+police_data <- readxl::read_excel("../data/police_data.xlsx",
                                   sheet = 2, 
                                   range = "A5:AA48")
 
@@ -365,7 +363,7 @@ police_data <- readxl::read_excel("../Data/police_data.xlsx",
 
 <br>
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, eval = FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, eval = TRUE}
 police_data %>% 
   kable() %>% 
   kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>% 
@@ -392,10 +390,10 @@ As an example we will export the police data we just imported.
 # and write_csv function, we start with file we want to export
 # and the the path where we want to export it to
 
-readr::write_csv(police_data, path = "../Data/test.csv")
+readr::write_csv(police_data, path = "../data/test.csv")
 ```
 
-Our data frame `police_data` would now be stored as `test.csv` in the `Data/` folder.
+Our data frame `police_data` would now be stored as `test.csv` in the `../data/` folder.
 
 ***
 
@@ -425,7 +423,7 @@ Let's go back to the gapminder data set we've worked with before. First let's lo
 
 ```{r}
 
-my_file <- file.path("data", "gapminder.csv")
+my_file <- file.path("../data", "gapminder.csv")
 
 gapminder <- read_csv(file = my_file)
 
@@ -696,6 +694,104 @@ The different types of missing have different implications.
 
 <!-- You can then look at a dataset with missing values and evaluate the imputation model. This would involve internal evaluation, comparing distributions with and without imputed values (e.g. Mean, Variance, and Scale) and also external evaluation, where you build a model and then evaluate the impact of the imputation method on Machine Learning model performance.  -->
 
+## Detecting unusual data
+
+We can look at all the distinct values for a variable using the verb `distinct`. This can help us identify anything unusual or also see what values come up.
+
+```{r}
+
+titanic %>%
+  distinct(sibsp)
+
+```
+
+For numeric variables we can use `summary` to get an idea of the spread of the data
+
+```{r}
+
+summary(titanic)
+
+```
+
+Looking at the output of summary what is the maximum and minimum fare?
+
+### Replacing values
+
+We can replace values using the statement `case_when()`. `case_when()` is a two-sided formula where the left-hand side is a logical condition (yes or no) and the right-hand side is the value to assign when that test is `TRUE`, with the two sides separated by a `~`.
+
+```{r}
+
+titanic %>%
+  mutate(survived = 
+           case_when(survived == 1 ~ "yes", 
+                     survived == 0 ~ "no")
+         )
+
+```
+If we are given more information, for instance, let's say that we know that the maximum fare for a ticket was 100. We may wish to create a `quality_check` column for fare to identify outliers.
+
+Now values that are not managed by the logical tests get a default replacement value: `NA`. If we prefer these values to not get an `NA` then we can do this by putting `TRUE` on the left hand side and the catch-all value on the right: `TRUE ~ missing`
+
+```{r}
+
+titanic %>%
+  mutate(quality_check = case_when(fare > 100 ~ "outlier",
+                                   fare <= 100 ~ "keep",
+                                    TRUE ~ "missing")
+        )
+
+```
+
+
+## Detecting duplicates
+
+Duplicates often creep into our datasets when we combine data from sources or can also accidentally occur during data entry. 
+
+We can use the function `get_dupes` from the R package `janitor` to identify duplicates. We need to specify the data frame (`dat`) and then the variable combination to search for dublicates and get back the duplicated rows.
+
+
+```{r}
+data(mtcars)
+
+janitor::get_dupes(dat = mtcars, mpg, hp)
+
+```
+
+Like other functions that follow `tidyverse` principles. We can also use this function with the pipe.
+
+```{r}
+
+mtcars %>%
+  get_dupes(wt)
+
+```
+
+To remove duplicates and included only distinct rows, we can use the verb `distinct`.
+
+```{r}
+
+dim(titanic)
+
+titanic_distinct <- titanic %>%
+                        distinct()
+
+```
+
+The verb `distinct` can also work with particular columns, e.g. if we wanted to represent only distinct fare types
+
+
+```{r}
+
+dim(titanic)
+
+titanic_distinct <- titanic %>%
+                        distinct(fare, keep.all = TRUE)
+
+dim(titanic_distinct)
+
+```
+
+
 
 # Formatting data in a tidy format
 
@@ -769,17 +865,216 @@ titanic %>%
 
 <br>
 
-## Untidy data
+## Reshaping Data
+
+```{r, echo = FALSE}
+
+current_year <- year(today())
+
+```
+
+
+Let's go back `r current_year - 2000` years, and take a look at the top billboard top 100 charts in the USA from the year 2000. 
+
 
 ```{r}
 
 data(billboard)
 
-head(billboard)
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, eval = TRUE}
+billboard %>% 
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>% 
+  scroll_box(width = "100", height = "700px")
+```
+
+Now arranging the data as a table (in a wide-format) is a popular way to collect data as it optimises ease of data entry or ease of comparison. However, this format is not easy to analyse, especially within R which is optimised for vectorised operations (i.e. working with variables in columns).
+
+Luckily there are two handy functions that we can use to **pivot** between the two. We can adjust the shapes of an object in R using the functions `pivot_longer` and `pivot_shorter`.
+
+### pivot_longer and pivot_shorter
+
+* `pivot_longer()` makes datasets **longer** by increasing the number of rows and decreasing the number of columns.
+
+* `pivot_wider()` "widens" data, increasing the number of columns and decreasing the number of rows. 
+
+The two functions are the inverse transformation of the other. 
+
+Returning to our `billboard` dataset. Here the data encoded in the column names is really a number (which week). In this case we want the names to become a variable called `week`, and the values to become a variable called `rank`, that is what was the ranking of a particular song in a given week. 
+
+```{r}
+
+billboard %>% 
+  pivot_longer(
+    cols = starts_with("wk"), 
+    names_to = "week", 
+    values_to = "rank"
+  )
+
+```
+
+We can also add additional arguments. For instance, not every song stays in the charts for all 76 weeks, so the structure of the input data forc the creation of unnecessary explicit `NA`s
+
+
+```{r}
+
+(billboard_long <- billboard %>% 
+                    pivot_longer(
+                      cols = starts_with("wk"), 
+                      names_to = "week", 
+                      values_to = "rank",
+                      values_drop_na = TRUE 
+                    )
+)
+
+```
+
+We may also want week to appear as an integer instead of as a character.
+
+
+```{r}
+
+billboard %>% 
+  pivot_longer(
+    cols = starts_with("wk"), 
+    names_to = "week", 
+    names_prefix = "wk", 
+    names_transform = list(week = as.integer), 
+    values_to = "rank",
+    values_drop_na = TRUE,
+  )
 
 ```
 
 
+Now if we want to transform the data back we can do this using `pivot_shorter`
+
+```{r}
+
+billboard_long %>%
+  pivot_wider(
+    names_from = week,
+    values_from = rank
+    )
+    
+
+
+```
+
+
+Let's take a look at another dataset, relig_income. This dataset was gathered by the Pew Research Center and contains the results from surveys of more than 35,000 Americans from all 50 states.
+
+```{r}
+data(relig_income)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, eval = TRUE}
+relig_income %>% 
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>% 
+  scroll_box(width = "100", height = "700px")
+```
+
+In this case the column names are character data that contain the income category. Within the cells are the counts of how many people are in that income range.
+
+
+### Exercise{.tabset .tabset-fade .tabset-fade}
+
+
+
+#### **Exercise**{-}
+
+We wish to reorganise the data so that the names of the columns, the income categories, are contained in a single variable called "income". We want to make it so that the values, the number of people in each category, are contained in a single column called "count".  
+
+
+```{r, eval = FALSE}
+relig_income %>%
+  pivot______(
+    cols = !religion, # all columns by religion
+    names_to = _____,
+    values_to = _______)
+```
+
+
+***
+
+<br>
+
+#### **Hint**{-}
+
+To choose the right function, you'll want to think about, are we making our data "longer" or "wider"?
+
+For the other aspects, we have a clue in the text.
+
+We wish to reorganise the data so that the **names** of the columns, the income categories, are contained in a single variable called "income". We want to make it so that the **values**, the number of people in each category, are contained in a single column called "count". 
+
+***
+
+<br>
+
+#### **Show Answer**{-}
+
+```{r}
+relig_income %>%
+  pivot_longer(
+    cols = !religion, # all columns by religion
+    names_to = "income",
+    values_to = "count")
+```
+
+***
+
+### Arranging data
+
+Another one of the dplyr verbs that comes in handy when we want to arrange data is `arrange`.
+
+To order the rows by the values of a column (low to high)
+
+```{r}
+
+titanic %>%
+  arrange(fare)
+
+```
+
+To order the rows by the values of a column (high to low).
+
+```{r}
+
+titanic %>%
+  arrange(desc(fare))
+
+```
+
+
+We can also `separate` one column into several.
+
+
+```{r}
+
+titanic2 <- titanic %>%
+              separate(
+                col = name_of_passenger, 
+                into = c("last_name", "first_names"), 
+                sep = ","
+              )
+
+
+```
+
+Or unite several columns into one.
+
+```{r}
+
+titanic2 %>%
+  unite(col = "name_of_passenger", "last_name", "first_names",  sep = ",")
+
+```
+
+***
 
 # Acknowledgements
 
