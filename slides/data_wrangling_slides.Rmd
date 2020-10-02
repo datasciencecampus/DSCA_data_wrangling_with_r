@@ -8,7 +8,7 @@ output:
   xaringan::moon_reader:
     lib_dir: libs
     seal: false
-    css: xaringan-themer.css
+    css: ["xaringan-themer.css", "gentle-ggplot2.css"]
     nature:
       highlightStyle: github
       highlightLines: true
@@ -35,6 +35,8 @@ xaringanExtra::use_xaringan_extra(include = c("panelset", "tile_view", "share_ag
 
 xaringanExtra::style_share_again(share_buttons = c("twitter", "linkedin", "pocket"))
 
+
+knitr::opts_chunk$set(fig.width=4, fig.height=3, out.width = "90%")
 ```
 
 
@@ -58,7 +60,7 @@ class: title-slide, center, bottom
 # `r rmarkdown::metadata$title`
 
 
-```{r, echo=FALSE, out.width=500, fig.align='center'}
+```{r, echo=FALSE, out.width=460, fig.align='center'}
 
 knitr::include_graphics("images/data_cowboy.png")
 
@@ -68,7 +70,7 @@ knitr::include_graphics("images/data_cowboy.png")
 
 #### `r rmarkdown::metadata$institute`
 
-Artwork by @allisonhorst
+###### Artwork by @allisonhorst
 
 
 
@@ -76,28 +78,31 @@ Artwork by @allisonhorst
 
 # Course Overview
 
-* The beginning
+* **The Beginning**
   * Creating Projects in RStudio
   * Recap: Importing and Exporting Data
 
 --
 
-* Tidying and quality checking: 
+* **Tidying and quality checking**
   * tidying column names
   * missing data
   * removing duplicates
   * detecting outliers
+
+---
+# Course Overview
   
---
-  
-* Reshaping Data
+* **Reshaping Data**
   * pivot_longer, pivot_wider
   * arranging data
   * unite and separate
   
 --
 
-* Dates and times with lubridate.
+* **Dates and times** 
+  * lubridate
+  * time zones
   
 
 ---
@@ -109,12 +114,16 @@ Artwork by @allisonhorst
 #install.packages("visdat")
 #install.packages("naniar")
 #install.packages("lubridate")
+#install.packages("haven")
+#install.packages("readxl")
 
 library(tidyverse)
 library(janitor)
 library(visdat)
 library(naniar)
 library(lubridate)
+library(haven)
+library(readxl)
 
 ```
 
@@ -127,17 +136,16 @@ library(lubridate)
 * `gapminder`: Gapminder foundation
 * `billboard`: Billboard music charts
 * `relig_income`: Pew research
+* `training_schedule`: Our training schedule:-).
   
 
 
 ---
 # Projects
 
-* Manage your work as projects
+* **‘New project…’** from the File menu, **‘New Directory’** to create a directory for the project.
 
-* Choose **‘New project…’** from the File menu and **‘New Directory’** to create a directory for the project.
-
-* To work on this project in the future, you can select **‘Open Project…’** or **‘Recent Projects’** from the File menu.
+* Future, select **‘Open Project…’** or **‘Recent Projects’** from the File menu.
 
 
 ![](images/level1.PNG)
@@ -153,11 +161,11 @@ As shown in the example below, where you include all files to a project in the s
 ---
 # Projects: file organisation
 
-* **Data** containing your raw and processed data.
+* **data** containing your raw and processed data.
 
-* **Images** containing photos you are using.
+* **images** containing photos you are using.
 
-* **Scripts** containing all the R script files.
+* **scripts** containing all the R script files.
 
 ![](images/level2.PNG)
 
@@ -252,6 +260,7 @@ police_data %>%
 readxl::excel_sheets(file_path)
 ```
 
+
 ---
 # Your Turn
 
@@ -261,15 +270,14 @@ readxl::excel_sheets(file_path)
 ```{r, eval = FALSE}
 
 police_data <- read_excel(
-  path = file_path, 
+  path = file_path,
   _______ = _______)
+
 ```
 
 Hint: Look at the help documentation by typing in ?read_excel, is there an argument that talks about "sheet"?
 
 `r countdown(minutes = 5, seconds = 00)` 
-
-
 
 ---
 # Answers
@@ -294,9 +302,9 @@ police_data <- readxl::read_excel(path = file_path,
 
 
 ---
-# Specifying a cell range
+# readxl: specifying a cell range
 
-* The police data still has lots of blank rows at the top. To get rid of this we can specify a cell range. 
+* To get rid of blank rows we can specify a cell range. 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, eval = TRUE}
 police_data %>% 
@@ -307,7 +315,7 @@ police_data %>%
   
 
 ---
-# Specifying a cell range
+# readxl: specifying a cell range
 
 
 ```{r, eval = TRUE}
@@ -328,6 +336,21 @@ police_data %>%
 ```
 
 ---
+# haven
+
+```{r, eval = FALSE}
+
+file_path <- file.path("folder", "file_name.sav")
+read_spss(file_path)
+
+
+file_path <- file.path("folder", "file_name.sas7bdat")
+read_sas(file_path)
+```
+
+* After running `library(haven)` try `?read_sas` and `?read_spss` to find out more.
+
+---
 # Exporting the Data
 
 * `readr` allows us to export to csv file type or equivalent using the **`write.csv()`** function.
@@ -344,7 +367,7 @@ readr::write_csv(police_data, path = export_path)
 ---
 # Tidying and quality-checking data
 
-```{r, echo=FALSE, out.width=600, fig.align='center'}
+```{r, echo=FALSE, out.width=700, fig.align='center'}
 
 knitr::include_graphics("images/janitor_clean_names.png")
 
@@ -352,7 +375,7 @@ knitr::include_graphics("images/janitor_clean_names.png")
 Artwork by @allison_horst
 
 ---
-# Tidying up names using the `janitor` package
+# Tidying up names using `janitor`
 
 
 ```{r}
@@ -368,73 +391,95 @@ names(titanic)
 ---
 # Missing Data
 
-```{r}
+
+.left-code[
+```{r first-plot1, eval=FALSE}
 
 visdat::vis_dat(titanic)
 
 ```
+]
 
+.right-plot[
+```{r first-plot1, ref.label='first-plot1', echo=FALSE, out.width="100%"}
+```
 From the plot above, which column is missing the most information?
+]
+
+
 
 ---
 # Missing data: percentage missing
 
-```{r}
+
+.left-code[
+```{r first-plot2, eval=FALSE}
 
 visdat::vis_miss(titanic)
 
 ```
+]
+
+.right-plot[
+```{r first-plot2, ref.label='first-plot2', echo=FALSE, out.width="100%"}
+```
+
+]
+
+
 
 ---
-# Missing Data: How many are missing?
+# Missing Data: how many are missing?
 
-* Using `naniar` we can explore missing data further using functions like `gg_miss_var` that work with `ggplot`.
 
-```{r Visualising how many observations are missing}
+.left-code[
+```{r first-plot3, eval=FALSE}
 
 naniar::gg_miss_var(titanic)
 
 ```
+]
+
+.right-plot[
+```{r first-plot3, ref.label='first-plot3', echo=FALSE, out.width="100%"}
+```
+]
+???
+
+* Using `naniar` we can explore missing data further using functions like `gg_miss_var` that work with `ggplot`.
 
 ---
 # Missing data: exploring the mechanisms
+
+.left-code[
+```{r first-plot4, eval=FALSE}
+
+titanic %>%
+      mutate(
+        missing_cabin = is.na(cabin)
+      ) %>%
+      ggplot(titanic, mapping = aes(fare)) +
+        geom_freqpoly(aes(colour = missing_cabin), 
+                      binwidth = 1/4)
+
+
+```
+]
+.right-plot[
+```{r first-plot4, ref.label='first-plot4', echo=FALSE, out.width="100%"}
+```
+]
+???
 
 * Are we missing the cabin for certain fares more?
 * Using `is.na()` to create a colour. 
 
-```{r. eval = FALSE}
-
-titanic %>%
-      mutate(
-        missing_cabin = is.na(cabin)
-      ) %>%
-      ggplot(titanic, mapping = aes(fare)) +
-        geom_freqpoly(aes(colour = missing_cabin), binwidth = 1/4)
-
-```
-
----
-# Missing data: exploring the mechanisms
-
-
-```{r, eval = TRUE, echo = FALSE}
-
-titanic %>%
-      mutate(
-        missing_cabin = is.na(cabin)
-      ) %>%
-      ggplot(titanic, mapping = aes(fare)) +
-        geom_freqpoly(aes(colour = missing_cabin), binwidth = 1/4)
-
-```
 
 
 ---
 # Prepping the gapminder data
 
-Before we answer that, let's 
-
-* load the gapminder data
+* Load the gapminder data
 
 ```{r, message = FALSE}
 
@@ -442,8 +487,9 @@ my_file <- file.path("../data", "gapminder.csv")
 
 gapminder <- read_csv(file = my_file)
 
-names(gapminder)
 ```
+
+--
 
 * clean it 
 
@@ -458,17 +504,40 @@ names(gapminder)
 ---
 # Prepping the gapminder data
 
+* We can also change the column using `rename`. The form is `new_name = old_name`. 
+
 ```{r}
+gapminder %>%
+  rename(population = pop) %>%
+  head()
+
+
+```
+
+
+---
+# Explore missing data in gapminder
+
+
+.left-code[
+```{r first-plot5, eval=FALSE}
 
 visdat::vis_dat(gapminder)
 
+
 ```
+]
+.right-plot[
+```{r first-plot5, ref.label='first-plot5', echo=FALSE, out.width="100%"}
+```
+]
+
 
 ---
 # Missing data: the *missing* relationship 
 
-
-```{r, eval }
+.left-code[
+```{r first-plot6, eval=FALSE}
 
 ggplot(gapminder,
     aes(x = fertility,
@@ -476,66 +545,47 @@ ggplot(gapminder,
     geom_point(alpha = 0.5)
 
 ```
+]
+.right-plot[
+```{r first-plot6, ref.label='first-plot6', echo=FALSE, out.width="100%"}
+```
+]
+
+???
 
 * By default, `ggplot` does not handle missing data. 
-
---
 
 * This makes it hard to explore and to know where data is missing.
 
 ---
 # Visualising something that's not there
 
-
-```{r}
+.left-code[
+```{r first-plot7, eval=FALSE}
 
 ggplot(gapminder,
     aes(x = fertility,
         y = infant_mortality)) +
   geom_miss_point(alpha = 0.5) #<<
 
+
 ```
+]
+.right-plot[
+```{r first-plot7, ref.label='first-plot7', echo=FALSE, out.width="100%"}
+```
+]
 
 ???
 
 * Replace "NA" values with values 10% lower than the minimum value in that variable. 
 
-
-
----
-# Types of missing data
-
-There are three types of missing data:
-
-* **MCAR**: Missing Completely at Random
-
---
-
-* **MAR**: Missing at Random
-
---
-
-* **MNAR**: Missing Not at Random
-
---
-
-The different types of missing have different implications.
-
-???
---
-
-|Type   |Imputation   |Deletion   | Visual cues   |
-|---|---|---|---|
-| MCAR  |Recommended   | Will not lead to bias   |  May lead to bias | Well-defined missingness clusters when arranging for a particular variable(s) |
-| MAR  | Recommended | May lead to bias | Well-defined missingness clusters when arranging for a particular variable(s)   |
-|  MNAR | Will lead to bias   | Will lead to bias   | Neither visual pattern above holds   |
-
-
 ---
 # Missing data: exploring patterns
 
 
-```{r}
+.left-code[
+```{r first-plot8, eval=FALSE}
 
 ggplot(gapminder,
     aes(x = fertility,
@@ -544,6 +594,12 @@ ggplot(gapminder,
   facet_wrap(~continent) #<<
 
 ```
+]
+
+.right-plot[
+```{r first-plot8, ref.label='first-plot8', echo=FALSE, out.width="100%"}
+```
+]
 
 ---
 # Your Turn
@@ -563,7 +619,8 @@ ggplot(gapminder,
 ---
 # Answer
 
-```{r, eval = TRUE}
+.left-code[
+```{r first-plot9, eval=FALSE}
 
 ggplot(gapminder,
     aes(x = fertility,
@@ -572,6 +629,12 @@ ggplot(gapminder,
   facet_wrap(~year) #<<
 
 ```
+]
+
+.right-plot[
+```{r first-plot9, ref.label='first-plot9', echo=FALSE, out.width="100%"}
+```
+]
 
 ---
 # Detecting unusual data
@@ -596,7 +659,7 @@ For numeric variables we can use `summary` to get an idea of the spread of the d
 
 ```{r}
 
-summary(titanic)
+summary(titanic$fare)
 
 ```
 
@@ -616,7 +679,7 @@ titanic %>%
   mutate(survived = 
            case_when(survived == 1 ~ "yes", 
                      survived == 0 ~ "no")
-         )
+         ) 
 
 ```
 
@@ -637,7 +700,8 @@ titanic %>%
   mutate(quality_check = case_when(fare > 100 ~ "outlier",
                                    fare <= 100 ~ "keep",
                                     TRUE ~ "missing") #<<
-        )
+        ) %>%
+  select(quality_check)
 
 ```
 
@@ -652,12 +716,9 @@ do this by putting `TRUE` on the left hand side and the catch-all value on the r
 ---
 # Detecting duplicates
 
-* Combining data, data entry mistakes.
+* Caused by combining data, data entry mistakes.
 
 --
-
-We can use the function `get_dupes` from the R package `janitor` to identify duplicates. We need to specify the data frame (`dat`) and then the variable combination to search for dublicates and get back the duplicated rows.
-
 
 ```{r}
 
@@ -676,11 +737,15 @@ mtcars %>%
 
 ```
 
+
+
 ???
 
 Duplicates often creep into our datasets when we combine data from sources or can also accidentally occur during data entry. 
 
 Like other functions that follow `tidyverse` principles. We can also use this function with the pipe.
+
+We can use the function `get_dupes` from the R package `janitor` to identify duplicates. We need to specify the data frame (`dat`) and then the variable combination to search for duplicates and get back the duplicated rows.
 
 ---
 # Removing duplicates
@@ -698,7 +763,8 @@ dim(titanic_distinct)
 
 ```
 
---
+---
+# Removing duplicates
 
 * `distinct` can also work with particular columns, e.g. if we wanted to represent only distinct fare types.
 
@@ -718,7 +784,7 @@ dim(titanic_distinct)
 # Reshaping Data
 
 
-```{r, echo=FALSE, out.width=350, fig.align='center'}
+```{r, echo=FALSE, out.width=400, fig.align='center'}
 
 knitr::include_graphics("images/tidyr_spread_gather_updated.png")
 
@@ -732,18 +798,25 @@ Tidy data as defined in [*R for Data Science*](https://r4ds.had.co.nz/):
 
  * A **variable** is a quantity, quality, or property that you can measure.
 
+--
+
  * A **value** is the state of a variable when you measure it. The value of a variable may change from measurement to measurement.
-
- * An **observation** is a set of measurements made under similar conditions (you usually make all of the measurements in an observation at the same time and on the same object). An observation will contain several values, each associated with a different variable.
  
+--
 
-![](../images/tidy_iris_example.png){width=750px}
+ * An **observation** is a set of measurements made under similar conditions.  An observation will contain several values, each associated with a different variable.
+ 
+---
+# Formatting data in a tidy format
 
-### Exercise{.tabset .tabset-fade .tabset-fade}
+```{r, echo=FALSE, out.width=900, fig.align='center'}
 
+knitr::include_graphics("images/tidy_iris_example.png")
 
+``` 
 
-#### **Exercise**{-}
+---
+# Exercise
 
 Take a look at the titanic data.
 
@@ -751,20 +824,20 @@ Take a look at the titanic data.
 * What is an example of a value?
 * What are the observations?
 
+`r countdown(minutes = 5, seconds = 00)` 
 
-***
+```{r}
+head(titanic)
+```
 
-<br>
+???
 
-#### **Hint**{-}
+**Hint**
 
-Remember that in a tidy data set, **variables** are the columns, a **value** is a cell, and an **observation** is a set of measurments made under similar conditions or related to a certain entity (e.g. in the case of the iris dataset a single flower).
+Remember, **variables** are the columns, a **value** is a cell, and an **observation** is a set of measurments made under similar conditions (e.g. in the case of the iris dataset a single flower).
 
-***
-
-<br>
-
-#### **Show Answer**{-}
+---
+# Answer
 
 In this case the **variables** are 
 
@@ -772,13 +845,19 @@ In this case the **variables** are
 names(titanic)
 ```
 
-A value would be a single value of one of theese variables, e.g. 
+---
+# Answer 
+
+A **value** would be a single value of one of these variables 
 
 ```{r}
 titanic[1,"name_of_passenger"]
 ```
 
-And the observation would be all of the information recorded for a single person:
+---
+# Answer
+
+And the **observation** would be all of the information recorded for a single person:
 
 ```{r}
 
@@ -787,13 +866,8 @@ titanic %>%
 
 ```
 
-
-***
-
-
-<br>
-
-## Reshaping Data
+---
+# Reshaping Data
 
 ```{r, echo = FALSE}
 
@@ -801,9 +875,7 @@ current_year <- year(today())
 
 ```
 
-
 Let's go back `r current_year - 2000` years, and take a look at the top billboard top 100 charts in the USA from the year 2000. 
-
 
 ```{r}
 
@@ -819,19 +891,27 @@ billboard %>%
   scroll_box(width = "100", height = "700px")
 ```
 
+???
 Now arranging the data as a table (in a wide-format) is a popular way to collect data as it optimises ease of data entry or ease of comparison. However, this format is not easy to analyse, especially within R which is optimised for vectorised operations (i.e. working with variables in columns).
 
 Luckily there are two handy functions that we can use to **pivot** between the two. We can adjust the shapes of an object in R using the functions `pivot_longer` and `pivot_shorter`.
 
-### pivot_longer and pivot_shorter
+---
+# pivot_longer and pivot_shorter
 
 * `pivot_longer()` makes datasets **longer** by increasing the number of rows and decreasing the number of columns.
 
-* `pivot_wider()` "widens" data, increasing the number of columns and decreasing the number of rows. 
+* `pivot_wider()` **widens** data, increasing the number of columns and decreasing the number of rows. 
 
 The two functions are the inverse transformation of the other. 
 
+
+
+???
 Returning to our `billboard` dataset. Here the data encoded in the column names is really a number (which week). In this case we want the names to become a variable called `week`, and the values to become a variable called `rank`, that is what was the ranking of a particular song in a given week. 
+
+---
+# Reshaping the billboard data
 
 ```{r}
 
@@ -844,39 +924,50 @@ billboard %>%
 
 ```
 
-We can also add additional arguments. For instance, not every song stays in the charts for all 76 weeks, so the structure of the input data forc the creation of unnecessary explicit `NA`s
+???
+
+We can also add additional arguments. For instance, not every song stays in the charts for all 76 weeks, so the structure of the input data for the creation of unnecessary explicit `NA`s
+
+---
+# Reshaping the billboard data
 
 
 ```{r}
 
 (billboard_long <- billboard %>% 
-                    pivot_longer(
-                      cols = starts_with("wk"), 
-                      names_to = "week", 
-                      values_to = "rank",
-                      values_drop_na = TRUE 
-                    )
+                      pivot_longer(
+                          cols = starts_with("wk"), 
+                          names_to = "week", 
+                          values_to = "rank",
+                          values_drop_na = TRUE 
+                      )
 )
 
 ```
 
-We may also want week to appear as an integer instead of as a character.
 
+---
+# Reshaping the billboard data
 
 ```{r}
 
 billboard %>% 
   pivot_longer(
-    cols = starts_with("wk"), 
-    names_to = "week", 
-    names_prefix = "wk", 
-    names_transform = list(week = as.integer), 
-    values_to = "rank",
-    values_drop_na = TRUE,
+      cols = starts_with("wk"), 
+      names_to = "week", 
+      names_prefix = "wk", 
+      names_transform = list(week = as.integer), 
+      values_to = "rank",
+      values_drop_na = TRUE,
   )
 
 ```
 
+* We may also want week to appear as an integer instead of as a character.
+
+
+---
+# Reshaping: transforming to pivot_shorter
 
 Now if we want to transform the data back we can do this using `pivot_shorter`
 
@@ -888,34 +979,31 @@ billboard_long %>%
     values_from = rank
     )
     
-
-
 ```
 
-
-Let's take a look at another dataset, relig_income. This dataset was gathered by the Pew Research Center and contains the results from surveys of more than 35,000 Americans from all 50 states.
-
-```{r}
-data(relig_income)
-```
+---
+# Reshaping the religion income
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, eval = TRUE}
+
+data(relig_income)
+
 relig_income %>% 
   kable() %>% 
   kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>% 
   scroll_box(width = "100", height = "700px")
 ```
 
+???
+
 In this case the column names are character data that contain the income category. Within the cells are the counts of how many people are in that income range.
 
+---
+# Your turn
 
-### Exercise{.tabset .tabset-fade .tabset-fade}
+* We wish to reorganise the data so that the names of the columns, the income categories, are contained in a single variable called "income". 
 
-
-
-#### **Exercise**{-}
-
-We wish to reorganise the data so that the names of the columns, the income categories, are contained in a single variable called "income". We want to make it so that the values, the number of people in each category, are contained in a single column called "count".  
+* We want to make it so that the values, the number of people in each category, are contained in a single column called "count".  
 
 
 ```{r, eval = FALSE}
@@ -926,12 +1014,7 @@ relig_income %>%
     values_to = _______)
 ```
 
-
-***
-
-<br>
-
-#### **Hint**{-}
+???
 
 To choose the right function, you'll want to think about, are we making our data "longer" or "wider"?
 
@@ -939,25 +1022,21 @@ For the other aspects, we have a clue in the text.
 
 We wish to reorganise the data so that the **names** of the columns, the income categories, are contained in a single variable called "income". We want to make it so that the **values**, the number of people in each category, are contained in a single column called "count". 
 
-***
-
-<br>
-
-#### **Show Answer**{-}
+---
+# Answer
 
 ```{r}
 relig_income %>%
   pivot_longer(
-    cols = !religion, # all columns by religion
+    cols = !religion, # all columns but religion
     names_to = "income",
     values_to = "count")
 ```
 
-***
 
-### Arranging data
+---
+# Reshaping: arranging data
 
-Another one of the dplyr verbs that comes in handy when we want to arrange data is `arrange`.
 
 To order the rows by the values of a column (low to high)
 
@@ -977,9 +1056,11 @@ titanic %>%
 
 ```
 
+???
+Another one of the dplyr verbs that comes in handy when we want to arrange data is `arrange`.
 
-We can also `separate` one column into several.
-
+---
+# Separate one column into several
 
 ```{r}
 
@@ -993,7 +1074,8 @@ titanic2 <- titanic %>%
 
 ```
 
-Or unite several columns into one.
+---
+# Unite several columns into one
 
 ```{r}
 
@@ -1005,36 +1087,14 @@ titanic2 %>%
 
 
 ---
+# Dates and times with lubridate
 
-
-```{r, echo=FALSE, out.width=350, fig.align='center'}
-
-knitr::include_graphics("images/lubridate.png")
-
-```
-Artwork by @allison_horst
-
-
-
-
----
-
-# You
-
-* Are familiar with R, Rmarkdown notebooks, and dplyr. 
-
-* Are new to working with dates and times in R
-
-* Want to learn easy ways to extract information from dates and times. 
-
-```{r, echo=FALSE, out.width=350, fig.align='center'}
+```{r, echo=FALSE, out.width=500, fig.align='center'}
 
 knitr::include_graphics("images/lubridate.png")
 
 ```
 Artwork by @allison_horst
-
-
 
 ---
 # Learning objectives
@@ -1231,7 +1291,7 @@ schedule <- schedule %>%
 
 ```
 
-<!-- Try creating the `end_date_time` by filling in the blanks -->
+
 
 ```{r, echo = FALSE, eval = FALSE}
 
@@ -1278,33 +1338,6 @@ schedule <- schedule %>%
 
 
 ---
-
-
-![\Concept Map](images/concept_map.png) 
-
-
----
-
-class: center, middle
-
-# Thanks!
-
-
-
-```{r, echo=FALSE, out.width=150}
-
-knitr::include_graphics("images/lubridate_hex.png")
-
-```
-
-
-Slides created via the R package [**xaringan**](https://github.com/yihui/xaringan).
-
-The chakra comes from [remark.js](https://remarkjs.com), [**knitr**](http://yihui.name/knitr), and [R Markdown](https://rmarkdown.rstudio.com).
-
-The gorgeous artwork comes from [@allison_horst](https://github.com/allisonhorst/stats-illustrations)
-
----
 # Having some fun
 
 
@@ -1334,17 +1367,32 @@ schedule %>%
 
 ```
 
-
-<!-- --- -->
-<!-- # Calculating a duration -->
-
-<!-- How long is each training session and workshop? -->
-
-<!-- ```{r} -->
-
-<!-- schedule <- schedule %>% -->
-<!--               mutate(duration = interval(end_date_time, start_date_time)) -->
+---
+# Recap
 
 
-<!-- ``` -->
 
+![\Concept Map](images/concept_map.png) 
+
+
+---
+# Thinking about your projects
+
+* What data cleaning do you need to do?
+* What is the missing data like?
+* What reshaping do you need to do?
+* Do you work with dates?
+
+
+---
+
+class: center, middle
+
+# Thanks!
+
+
+Slides created via the R package [**xaringan**](https://github.com/yihui/xaringan).
+
+The chakra comes from [remark.js](https://remarkjs.com), [**knitr**](http://yihui.name/knitr), and [R Markdown](https://rmarkdown.rstudio.com).
+
+The gorgeous artwork comes from [@allison_horst](https://github.com/allisonhorst/stats-illustrations)
