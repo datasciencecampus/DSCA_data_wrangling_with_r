@@ -29,15 +29,29 @@ htmltools::img(src = knitr::image_uri("../images/dsc_logo.png"),
 
 # Learning Objectives
 
-<br>
+* **The Beginning**
+  * Learn how to creating Projects in RStudio
+  * Learn the packages associated with importing and exporting different datasets
 
-**The goal of this session is to:**
 
-* Be familiar with project organisation
-* Be able to import data from multiple formats
-* Be able to inspect loaded data and select elements within the data frame
-* Be able to export data
-* Be able to identify missing data
+* **Tidying and quality checking**
+  * Learn to tidying column names with janitor.
+  * Learn to visualise missing data with naniar and vidat.
+  * Learn to identify and removing duplicates using janitor and dplyr
+  * Learn to detect outliers using dplyr and summary.
+
+* **Reshaping Data**
+  * Learn to reshape data using pivot_longer and pivot_wider
+  * Learn to arrange data
+  * Learn to unite and separate columns using unite and separate
+  
+ 
+
+* **Dates and times** 
+  * lubridate
+  * time zones
+  
+
 
 
 ***
@@ -992,7 +1006,7 @@ We wish to reorganise the data so that the names of the columns, the income cate
 ```{r, eval = FALSE}
 relig_income %>%
   pivot______(
-    cols = !religion, # all columns by religion
+    cols = !religion, # all columns but religion
     names_to = _____,
     values_to = _______)
 ```
@@ -1077,10 +1091,9 @@ titanic2 %>%
 
 # Acknowledgements
 
-
 ***
 
-Original content developed by the Office for National Statistics (ONS) Learning Academy.
+Thank you the Office for National Statistics (ONS) Learning Academy (Ian Banda) for letting us include the projects and importing and exporting sections and for the titanic data examples.
 
 *** 
  
