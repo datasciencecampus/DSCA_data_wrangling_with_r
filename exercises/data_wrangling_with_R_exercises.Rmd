@@ -164,9 +164,9 @@ There are a variety of ways of reading data into R:
 
 ```{r}
 
-path <- file.path("../data", "titanic.csv")
+titanic_path <- file.path("../data", "titanic.csv")
 
-titanic <- readr::read_csv(file = path)
+titanic <- readr::read_csv(file = titanic_path)
 
 ```
 
@@ -178,9 +178,9 @@ titanic <- readr::read_csv(file = path)
 
 ```{r, eval = TRUE}
 
-file_path <- file.path("../data", "police_data.xlsx")
+police_path <- file.path("../data", "police_data.xlsx")
 
-police_data <- readxl::read_excel(path = file_path)
+police_data <- readxl::read_excel(path = police_path)
 
 ```
 
@@ -201,7 +201,7 @@ police_data %>%
 ```{r, eval=TRUE}
 ## To find out the excel sheet names from excel file
 
-readxl::excel_sheets(file_path)
+readxl::excel_sheets(police_path)
 ```
 
  
@@ -212,7 +212,7 @@ readxl::excel_sheets(file_path)
 ```{r, eval = FALSE}
 
 police_data <- read_excel(
-  path = file_path,
+  path = police_path,
   _______ = _______)
 
 ```
@@ -226,7 +226,7 @@ Hint: Look at the help documentation by typing in ?read_excel, is there an argum
 ```{r, eval = TRUE}
 
 
-police_data <- readxl::read_excel(path = file_path,
+police_data <- readxl::read_excel(path = police_path,
                                   sheet = 2, 
                                   range = "A5:AA48")
 
@@ -239,12 +239,12 @@ police_data <- readxl::read_excel(path = file_path,
 
 ```{r, eval = FALSE}
 
-file_path <- file.path("folder", "file_name.sav")
-read_spss(file_path)
+spss_path <- file.path("folder", "file_name.sav")
+read_spss(spss_path)
 
 
-file_path <- file.path("folder", "file_name.sas7bdat")
-read_sas(file_path)
+sas_path <- file.path("folder", "file_name.sas7bdat")
+read_sas(sas_path)
 ```
 
 * After running `library(haven)` try `?read_sas` and `?read_spss` to find out more.
@@ -258,8 +258,8 @@ As an example we will export the police data we just imported.
 
 ```{r, eval=TRUE}
 
-export_path <- file.path("../data", "test.csv")
-readr::write_csv(police_data, path = export_path)
+police_export_path <- file.path("../data", "test.csv")
+readr::write_csv(police_data, path = police_export_path)
 
 ```
 
@@ -344,9 +344,9 @@ titanic %>%
 
 ```{r, message = FALSE}
 
-my_file <- file.path("../data", "gapminder.csv")
+gapminder_path <- file.path("../data", "gapminder.csv")
 
-gapminder <- read_csv(file = my_file)
+gapminder <- read_csv(file = gapminder_path)
 
 ```
 
@@ -541,7 +541,7 @@ janitor::get_dupes(dat = mtcars, mpg, hp)
 ```{r}
 
 mtcars %>%
-  get_dupes(wt)
+  janitor::get_dupes(wt)
 
 ```
 
