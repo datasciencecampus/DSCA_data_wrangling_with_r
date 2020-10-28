@@ -136,7 +136,7 @@ library(readxl)
 * `gapminder`: Gapminder foundation
 * `billboard`: Billboard music charts
 * `relig_income`: Pew research
-* `training_schedule`: DSC previous training schedule:-).
+* `training_schedule`: DSC previous training schedule.
 
 ---
 # Projects
