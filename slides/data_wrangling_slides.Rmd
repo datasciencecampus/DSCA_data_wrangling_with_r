@@ -860,9 +860,8 @@ names(titanic)
 A **value** would be a single value of one of these variables 
 
 ```{r}
-titanic[[1,"name_of_passenger"]]
+titanic[1,"name_of_passenger"]
 ```
-<!-- --JM added in second set of square brackets to access element within smaller tibble, might be clearer to see the value, but feel free to revert. -->
 
 ---
 # Answer
