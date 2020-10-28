@@ -136,9 +136,7 @@ library(readxl)
 * `gapminder`: Gapminder foundation
 * `billboard`: Billboard music charts
 * `relig_income`: Pew research
-* `training_schedule`: Our training schedule:-).
-  
-<!-- --JM for future use it might be worth changing this to "DSC previous training schedule -->
+* `training_schedule`: DSC previous training schedule:-).
 
 ---
 # Projects
@@ -169,7 +167,6 @@ As shown in the example below, where you include all files to a project in the s
 
 ![](images/level2.PNG)
 
-<!-- --JM not a change suggestion but this image is from my own screenshot :D Ian couldn't get the structure working on his machine, I can see from the ITML (intro to machine learning) folder in the favourites bar. Good use of sharing! -->
 
 ???
 
@@ -232,8 +229,6 @@ titanic <- readr::read_csv(file = titanic_path)
 # readxl
 
 * Reads excel data into R (both `.xls` and `.xlsx`) formats.
-
-<!-- --JM Changed the file path variable names to be more descriptive -->
 
 ```{r, eval = TRUE}
 
@@ -496,8 +491,6 @@ gapminder <- read_csv(file = gapminder_path)
 
 * clean it 
 
-<!-- --JM added package name for clarity of function origin -->
-
 ```{r}
 
 gapminder <- janitor::clean_names(gapminder)
@@ -644,9 +637,7 @@ ggplot(gapminder,
 ---
 # Detecting unusual data
 
-We can look at all the distinct values for a variable using the verb `distinct`. 
-
-<!-- --JM I haven't seen the other material, but has the `sibsp` column been explained? Ignore me if so -->
+We can use `distinct` to look at the distinct values, e.g. siblings `sibsp`.
 
 ```{r}
 
@@ -718,7 +709,7 @@ titanic %>%
 * If we prefer these values to not get an `NA` then we can use `TRUE ~ missing`
 
 ???
-do this by putting `TRUE` on the left hand side and the catch-all value on the right:
+We do this by putting `TRUE` on the left hand side and the catch-all value on the right:
 
 ---
 # Detecting duplicates
@@ -786,8 +777,17 @@ titanic_distinct <- titanic %>%
 dim(titanic_distinct)
 
 ```
+---
+# Removing duplicates
 
-<!-- --JM althought the shape of the resulting distinct frame is shown, is it worth showing what the frame values are / what columns are kept -->
+* `distinct` can also work with particular columns, e.g. if we wanted to represent only distinct fare types.
+
+
+```{r}
+
+head(titanic_distinct)
+
+```
 
 ---
 # Reshaping Data
@@ -904,10 +904,10 @@ billboard %>%
 ???
 Now arranging the data as a table (in a wide-format) is a popular way to collect data as it optimises ease of data entry or ease of comparison. However, this format is not easy to analyse, especially within R which is optimised for vectorised operations (i.e. working with variables in columns).
 
-Luckily there are two handy functions that we can use to **pivot** between the two. We can adjust the shapes of an object in R using the functions `pivot_longer` and `pivot_shorter`.
+Luckily there are two handy functions that we can use to **pivot** between the two. We can adjust the shapes of an object in R using the functions `pivot_longer` and `pivot_wider`.
 
 ---
-# pivot_longer and pivot_shorter
+# pivot_longer and pivot_wider
 
 * `pivot_longer()` makes datasets **longer** by increasing the number of rows and decreasing the number of columns.
 
@@ -979,9 +979,9 @@ billboard %>%
 
 
 ---
-# Reshaping: transforming to pivot_shorter
+# Reshaping: transforming to pivot_wider
 
-Now if we want to transform the data back we can do this using `pivot_shorter`
+Now if we want to transform the data back we can do this using `pivot_wider`
 
 ```{r}
 
@@ -1133,7 +1133,7 @@ library(lubridate)
 library(readxl)
 ```
 
-* And we'll be working with the dataframe `training_schedule.xlsx` which you might find familiar...
+* And we'll be working with the dataframe `training_schedule.xlsx` which shows a past training programme run with the Caribbean.
 
 ---
 layout: false
