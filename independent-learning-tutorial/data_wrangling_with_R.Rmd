@@ -400,7 +400,7 @@ As an example we will export the police data we just imported.
 readr::write_csv(police_data, path = "../data/test.csv")
 ```
 
-Our data frame `police_data` would now be stored as `test.csv` in the `../data/` folder. The `.csv` (comma separated value) files can then be opened in excel or anothe programme of choice.
+Our data frame `police_data` would now be stored as `test.csv` in the `../data/` folder. The `.csv` (comma separated value) files can then be opened in excel or another programme of choice.
 
 
 
@@ -440,7 +440,7 @@ gapminder <- read_csv(file = my_file)
 ```
 
 
-### Exercise{.tabset .tabset-fade .tabset-fade}
+### Exercise{.tabset .tabset-fade}
 
 
 
@@ -502,7 +502,7 @@ From the plot above, which column is missing the most information?
 
 
 
-### Exercise{.tabset .tabset-fade .tabset-fade}
+### Exercise{.tabset .tabset-fade}
 
 
 
@@ -624,7 +624,7 @@ ggplot(gapminder,
 
 
 
-### Exercise{.tabset .tabset-fade .tabset-fade}
+### Exercise{.tabset .tabset-fade}
 
 
 
@@ -823,7 +823,7 @@ Tabular data is a set of values, where each **value** is placed in its own “ce
 
 ![](../images/tidy_iris_example.png){width=750px}
 
-### Exercise{.tabset .tabset-fade .tabset-fade}
+### Exercise{.tabset .tabset-fade}
 
 
 
@@ -954,7 +954,7 @@ billboard %>%
     cols = starts_with("wk"), 
     names_to = "week", 
     names_prefix = "wk", 
-    names_transform = list(week = as.integer), 
+    names_transform = list(week = as.integer),# --JM this line causes the chunk to break on my machine
     values_to = "rank",
     values_drop_na = TRUE,
   )
@@ -993,7 +993,7 @@ relig_income %>%
 In this case the column names are character data that contain the income category. Within the cells are the counts of how many people are in that income range.
 
 
-### Exercise{.tabset .tabset-fade .tabset-fade}
+### Exercise{.tabset .tabset-fade}
 
 
 
@@ -1165,7 +1165,7 @@ ymd("20201002")
 
 ```
 
-### Exercise{.tabset .tabset-fade .tabset-fade}
+### Exercise{.tabset .tabset-fade}
 
 
 
@@ -1185,7 +1185,7 @@ ___("10-02-2020")
 
 #### **Hint**{-}
 
-Look back a the original example. In this case 10 is the month, 02 is the day, and 2020 is the year. What order to they occur in here? What helper letter is used for each part? 
+Look back a the original example. In this case "10" is the month, "02" is the day, and "2020" is the year. What order to they occur in here? What helper letter is used for each part? 
 
 ```{r, eval= FALSE}
 
@@ -1213,7 +1213,7 @@ mdy("10-02-2020")
 
 
 
-### Exercise{.tabset .tabset-fade .tabset-fade}
+### Exercise{.tabset .tabset-fade}
 
 
 
@@ -1313,7 +1313,7 @@ schedule %>%
 ```
 
 
-### Exercise{.tabset .tabset-fade .tabset-fade}
+### Exercise{.tabset .tabset-fade}
 
 
 #### **Exercise**{-}
@@ -1411,7 +1411,7 @@ schedule <- schedule %>%
 ```
 
 
-### Exercise{.tabset .tabset-fade .tabset-fade}
+### Exercise{.tabset .tabset-fade}
 
 
 #### **Exercise**{-}
@@ -1479,7 +1479,7 @@ schedule <- schedule %>%
 
 Fill in the blanks to find out which dates the delegates from Belize get to sleep in?
 
-### Exercise{.tabset .tabset-fade .tabset-fade}
+### Exercise{.tabset .tabset-fade}
 
 
 #### **Exercise**{-}
