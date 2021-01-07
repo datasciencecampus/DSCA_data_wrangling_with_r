@@ -29,27 +29,18 @@ htmltools::img(src = knitr::image_uri("../images/dsc_logo.png"),
 
 # Learning Objectives
 
-* **The Beginning**
-  * Learn how to creating Projects in RStudio
+  * Learn how to create Projects in RStudio
   * Learn the packages associated with importing and exporting different datasets
-
-
-* **Tidying and quality checking**
-  * Learn to tidying column names with janitor.
-  * Learn to visualise missing data with naniar and vidat.
+  * Learn to tidying column names with janitor
+  * Learn to visualise missing data with naniar and visdat
   * Learn to identify and removing duplicates using janitor and dplyr
   * Learn to detect outliers using dplyr and summary.
-
-* **Reshaping Data**
   * Learn to reshape data using pivot_longer and pivot_wider
   * Learn to arrange data
   * Learn to unite and separate columns using unite and separate
   
- 
-
-* **Dates and times** 
-  * lubridate
-  * time zones
+  * Learn to create and parse datetime objects using lubridate
+  * Learn to adjust the time zone in a date
   
 
 
@@ -78,7 +69,7 @@ As shown in the example below, where you include all files to a project in the s
 
 <br>
 
-![](../images/level1.PNG)
+![\Organisation of a project using R projects](../images/level1.PNG)
 
 <br>
 
@@ -92,7 +83,7 @@ Within the folder, it is good practice to further organise your files within fol
 
 <br>
 
-![](../images/level2.PNG)
+![\Example folder organisation with folders scripts, images, and data](../images/level2.PNG)
 
 
 
@@ -106,10 +97,11 @@ Below is a list of the core packages in `tidyverse` and others that we will be u
 * [`ggplot2`](https://ggplot2.tidyverse.org/) - Data Visualisation
 
 We will also be using
-* [`lubridate`](https://lubridate.tidyverse.org/) - working with dates,
-* [`janitor`](https://lubridate.tidyverse.org/) - cleaning data
-* [`naniar`]() - working with missing data,
-* [`visdat`]() - visualising missing data,
+* [`readxl`](http://cran.r-rpoject.org/web/packages/readxl/inde.html) - Data Import,
+* [`lubridate`](https://lubridate.tidyverse.org/) - Dates,
+* [`janitor`](https://cran.r-project.org/web/packages/janitor/index.html) - Data Cleaning
+* [`naniar`](https://cran.r-project.org/web/packages/naniar/index.html) - Visualising Missing Data,
+* [`visdat`](https://cran.r-project.org/web/packages/visdat/index.html) - Visualising Missing Data
 
 
 
@@ -126,20 +118,22 @@ Note: The majority of the 'heavy lifting', with respect to data manipulation and
 
 ![\Image showing visual representation of tidyverse packages and workflow](../images/tidyverse.png)
 
-For this adventure we'll be using the `tidyverse` meta package in addition to the packages `janitor`, `visdat`, `naniar` for data cleaning and working with and visualising missing data.
+For this adventure we'll be using the `tidyverse` meta package in addition to the packages `janitor`, `visdat`, `naniar`, and `lubridate` for data cleaning and working with and visualising missing data.
 
-```{r}
+```{r, messages = FALSE, warning = FALSE}
 #install.packages("tidyverse")
 #install.packages("janitor")
 #install.packages("visdat")
 #install.packages("naniar")
 #install.packages("lubridate")
+#install.pacakges("readxl")
 
 library(tidyverse)
 library(janitor)
 library(visdat)
 library(naniar)
 library(lubridate)
+library(readxl)
 
 
 ```
@@ -406,7 +400,9 @@ As an example we will export the police data we just imported.
 readr::write_csv(police_data, path = "../data/test.csv")
 ```
 
-Our data frame `police_data` would now be stored as `test.csv` in the `../data/` folder.
+Our data frame `police_data` would now be stored as `test.csv` in the `../data/` folder. The `.csv` (comma separated value) files can then be opened in excel or another programme of choice.
+
+
 
 ***
 
@@ -422,13 +418,14 @@ The package `janitor` has several useful functions for cleaning data. We can use
 
 ```{r}
 
+names(titanic)
+
 titanic <- janitor::clean_names(titanic)
 
 names(titanic)
 
 ```
 
-Let's load in the gapminder data we've looked at before
 
 ### Prepping the gapminder data
 
@@ -443,7 +440,7 @@ gapminder <- read_csv(file = my_file)
 ```
 
 
-### Exercise{.tabset .tabset-fade .tabset-fade}
+### Exercise{.tabset .tabset-fade}
 
 
 
@@ -505,7 +502,7 @@ From the plot above, which column is missing the most information?
 
 
 
-### Exercise{.tabset .tabset-fade .tabset-fade}
+### Exercise{.tabset .tabset-fade}
 
 
 
@@ -627,7 +624,7 @@ ggplot(gapminder,
 
 
 
-### Exercise{.tabset .tabset-fade .tabset-fade}
+### Exercise{.tabset .tabset-fade}
 
 
 
@@ -755,6 +752,8 @@ titanic %>%
 
 ```
 
+A few additional notes about the `case_when`, the left-hand side must evaluate to a logical vector (i.e. can the answer to the logical operation be TRUE or FALSE?). The right-hand side does not need to be logical but it must evaluate to the same type of vector (e.g. all characters, or all numeric). When you search online for code examples, you might also see the `recode` and `ifelse` functions used to carry out similar tasks. 
+
 
 ## Detecting duplicates
 
@@ -824,7 +823,7 @@ Tabular data is a set of values, where each **value** is placed in its own “ce
 
 ![](../images/tidy_iris_example.png){width=750px}
 
-### Exercise{.tabset .tabset-fade .tabset-fade}
+### Exercise{.tabset .tabset-fade}
 
 
 
@@ -906,9 +905,9 @@ billboard %>%
 
 Now arranging the data as a table (in a wide-format) is a popular way to collect data as it optimises ease of data entry or ease of comparison. However, this format is not easy to analyse, especially within R which is optimised for vectorised operations (i.e. working with variables in columns).
 
-Luckily there are two handy functions that we can use to **pivot** between the two. We can adjust the shapes of an object in R using the functions `pivot_longer` and `pivot_shorter`.
+Luckily there are two handy functions that we can use to **pivot** between the two. We can adjust the shapes of an object in R using the functions `pivot_longer` and `pivot_wider`.
 
-### pivot_longer and pivot_shorter
+### pivot_longer and pivot_wider
 
 * `pivot_longer()` makes datasets **longer** by increasing the number of rows and decreasing the number of columns.
 
@@ -955,7 +954,7 @@ billboard %>%
     cols = starts_with("wk"), 
     names_to = "week", 
     names_prefix = "wk", 
-    names_transform = list(week = as.integer), 
+    names_transform = list(week = as.integer),# --JM this line causes the chunk to break on my machine
     values_to = "rank",
     values_drop_na = TRUE,
   )
@@ -963,7 +962,7 @@ billboard %>%
 ```
 
 
-Now if we want to transform the data back we can do this using `pivot_shorter`
+Now if we want to transform the data back we can do this using `pivot_wider`
 
 ```{r}
 
@@ -994,7 +993,7 @@ relig_income %>%
 In this case the column names are character data that contain the income category. Within the cells are the counts of how many people are in that income range.
 
 
-### Exercise{.tabset .tabset-fade .tabset-fade}
+### Exercise{.tabset .tabset-fade}
 
 
 
@@ -1062,8 +1061,10 @@ titanic %>%
 
 ```
 
+### Separate and unite
 
-We can also `separate` one column into several.
+
+Separate and unite are two other functions that are useful for helping organised our data into columns. We can also `separate` one column into several.
 
 
 ```{r}
@@ -1086,6 +1087,460 @@ titanic2 %>%
   unite(col = "name_of_passenger", "last_name", "first_names",  sep = ",")
 
 ```
+
+# Dates and times with lubridate
+
+```{r, echo=FALSE, out.width=500, fig.align='center'}
+
+knitr::include_graphics("../images/lubridate.png")
+
+```
+Artwork by @allison_horst
+
+
+## Learning objectives
+
+* Learn to create date, time, and date-time objects with **helpers** (e.g. ymd, dmy_hms). 
+
+* Learn to extract components (e.g. year, month, wday) from date-time objects with **accessors**. 
+
+* Learn how to change time zones with `with_tz`
+
+### What makes dates and times so challenging?
+
+
+* **Physical phenomena**
+
+
+<a title="Elf Pavlik / CC0" href="https://commons.wikimedia.org/wiki/File:Blue_Marble_rotating.gif"><img width="512" alt="Blue Marble rotating" src="https://upload.wikimedia.org/wikipedia/commons/4/45/Blue_Marble_rotating.gif"></a>
+Blue Marble Rotating by Elf Pavlik
+
+    * Rotation of the Earth
+    * Earth's orbit around the sun
+
+* **Geopolitical phenomena**
+
+    * Months, time zones, leap years, and DST
+    * The Tzolk'in Mayan calendar had 260 days!
+  
+![Guardian News Headline](../images/eu_guardian.png)  
+
+
+
+## Dates and times in R
+
+Type can be
+1. A date (`<date>`)
+2. A time (`<time>`)
+3. A date-time (`<dttm>`) a date plus time. 
+
+
+Can be built from
+
+* Strings: 09/10/2010
+* Existing date/time objects
+* Date-time components (year = 1990, month = 12, day = 4)
+
+
+
+### Parsing dates and times using helpers
+
+
+```{r, echo=FALSE, out.width=600, fig.align='center'}
+
+knitr::include_graphics("../images/lubridate_ymd.png")
+
+```
+
+Artwork by @allison_horst
+
+
+* Identify the order in which the year (`y`), month (`m`), and day (`d`) appears in your dates.
+
+* Let's look at October 2, 2020.
+
+```{r}
+
+ymd("20201002")
+
+```
+
+### Exercise{.tabset .tabset-fade}
+
+
+
+#### **Exercise**{-}
+
+Fill in the appropriate helper for the date: October 2, 2020 based on the order in which the year (`y`), month (`m`), and day (`d`) appears in your dates.
+
+```{r, eval= FALSE}
+
+___("10-02-2020")
+
+```
+
+***
+
+<br>
+
+#### **Hint**{-}
+
+Look back a the original example. In this case "10" is the month, "02" is the day, and "2020" is the year. What order to they occur in here? What helper letter is used for each part? 
+
+```{r, eval= FALSE}
+
+___("10-02-2020")
+
+```
+
+
+***
+
+<br>
+
+#### **Show Answer**{-}
+
+The order October 2, 2020 occurs in is month (m), day (d), and then year (y).
+
+```{r, eval= TRUE}
+
+mdy("10-02-2020")
+
+```
+
+
+* For date-times, we can add an underscore and one of more `h` `m` and `s` to our parsing function.
+
+
+
+### Exercise{.tabset .tabset-fade}
+
+
+
+#### **Exercise**{-}
+
+* What helper would we use for October 3, 2020 if it comes in this format?
+
+```{r, eval = FALSE}
+
+____("03/10/20 15:32:05")
+
+```
+
+***
+
+<br>
+
+#### **Hint**{-}
+
+* We first need to specify the order that the day, month, and year occur. Then the order in which the hours, minutes, and seconds occur. The two will be separated by and underscore "_". In this case it will start with "dmy_"
+
+```{r, eval = FALSE}
+
+____("03/10/20 15:32:05")
+
+```
+
+
+***
+
+<br>
+
+#### **Show Answer**{-}
+
+* The order is day `d`, month `m`, and year `y`. We then need to add an underscore `_`. Then for the time it is hour `h`, `m`, and `s`. 
+
+```{r, eval = FALSE}
+
+dmy_hms("03/10/20 15:32:05")
+
+```
+
+
+
+
+Times are supplied in `UTC`, the coordinated universal time, unless we specify a time zone (tz). 
+
+
+### Dealing with Time Zones
+
+A tale of 5 time zones...
+
+Let's take a look at our training schedule 
+
+```{r}
+
+training_path <- file.path("../data", "training_schedule.xlsx")
+schedule <- read_xlsx(training_path)
+
+schedule <- schedule %>%
+              mutate(date = as_datetime(date))
+
+```
+
+```{r, echo = FALSE}
+schedule %>% kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>% 
+  scroll_box(width = "100", height = "700px")
+```
+
+
+
+### Getting components
+
+We can pull out individual parts of a date with the **accessor** functions:
+
+- year, month, day
+- mday, yday, wday
+- hour, minute, second
+
+```{r, eval = FALSE}
+
+schedule %>%
+  mutate(year = year(date)) %>%
+  head()
+
+```
+
+```{r, echo = FALSE}
+
+schedule %>%
+  mutate(year = year(date)) %>%
+  head() %>% kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>% 
+  scroll_box(width = "100", height = "700px")
+
+```
+
+
+### Exercise{.tabset .tabset-fade}
+
+
+#### **Exercise**{-}
+
+* Fill in the blank to determine what day of the week our courses fall on
+
+```{r, eval = FALSE}
+
+schedule %>%
+  mutate(weekday = ____(date)) 
+
+```
+
+***
+
+<br>
+
+#### **Hint**{-}
+
+* It's not `week()`. It's similar to `mday()` which extracts the day of the month
+
+```{r, eval = FALSE}
+
+schedule %>%
+  mutate(weekday = ____(date)) 
+
+```
+
+***
+
+<br>
+
+#### **Show Answer**{-}
+
+* The **accessor** function we are using is `wday()`. We can add the arguments label = TRUE, abbr = FALSE to `wday()` to get the full name of the week day. 
+
+```{r, eval = FALSE}
+
+schedule %>%
+  mutate(weekday = wday(date, label = TRUE, abbr = FALSE)) 
+
+
+```
+
+
+```{r, echo = FALSE}
+
+schedule %>%
+  mutate(weekday = wday(date, label = TRUE, abbr = FALSE)) %>% kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>% 
+  scroll_box(width = "100", height = "700px")
+
+
+```
+
+
+
+
+### Creating a date time from date-time components
+
+We can create a date-time by combining our date and start-time
+
+```{r}
+
+schedule <- schedule %>%
+              mutate(
+                start_date_time = make_datetime(
+                  year = year(date), 
+                  month = month(date), 
+                  day = day(date), 
+                  hour = start_time, 
+                  tz = "Europe/London")
+                )
+
+
+```
+
+* We can create the date time by extract the key parts of the date using `year()`, `month()`, and `day()` from the date. 
+* We can also extract the `hour()` from the `start_time()`. 
+
+### Changing timezones with `with_tz`
+
+* But what is the time in Jamaica?
+
+* We can change the time zone using by specifying the time zone we're interested using the argument `tz`. 
+
+```{r}
+
+schedule <- schedule %>%
+              mutate(start_date_time_jam = with_tz(
+                start_date_time, 
+                tz = "America/Jamaica")
+                )
+
+```
+
+
+### Exercise{.tabset .tabset-fade}
+
+
+#### **Exercise**{-}
+
+* Try changing the country to Belize. 
+
+Run `OlsonNames(tzdir = NULL)` first to find the correct time zone for Belize.
+ 
+
+```{r, eval = FALSE}
+
+OlsonNames(tzdir = NULL)
+
+schedule <- schedule %>%
+              mutate(start_date_time_bz = with_tz(
+                start_date_time, 
+                tz = _______)
+                )
+
+```
+
+***
+
+<br>
+
+#### **Hint**{-}
+
+* Look under the "America" for Belize in the `OlsonNames()`. And don't forget the quotes.
+
+```{r, eval = FALSE}
+
+OlsonNames(tzdir = NULL)
+
+schedule <- schedule %>%
+              mutate(start_date_time_bz = with_tz(
+                start_date_time, 
+                tz = _______)
+                )
+
+```
+
+***
+
+<br>
+
+#### **Show Answer**{-}
+
+* The appropriate `OlsonNames` time zone is "America/Belize". 
+
+```{r, eval = TRUE}
+
+schedule <- schedule %>%
+              mutate(start_date_time_bz = with_tz(
+                start_date_time, 
+                tz = "America/Belize")
+                )
+
+```
+
+
+
+
+### Combining lubridate with the filtering
+
+
+Fill in the blanks to find out which dates the delegates from Belize get to sleep in?
+
+### Exercise{.tabset .tabset-fade}
+
+
+#### **Exercise**{-}
+
+* Fill in the blanks to find out which dates the delegates from Belize get to sleep in (i.e. no meetings before 8am!)?
+ 
+
+```{r, eval = FALSE}
+
+
+schedule %>%
+  filter(______(start_date_time_bz) > 7) %>%
+  select(start_date_time_bz)
+
+```
+
+***
+
+<br>
+
+#### **Hint**{-}
+
+
+* What accessor function would you use to extract the `hour`?
+
+
+```{r, eval = FALSE}
+
+schedule %>%
+  filter(______(start_date_time_bz) > 7) %>%
+  select(start_date_time_bz)
+
+```
+
+***
+
+<br>
+
+#### **Show Answer**{-}
+
+* Fill in the blanks to find out which dates the delegates from Belize get to sleep in (i.e. no meetings before 8am!)?
+
+
+```{r, eval = TRUE}
+
+schedule %>%
+  filter(hour(start_date_time_bz) > 7) %>%
+  select(start_date_time_bz)
+
+```
+
+
+### Lubridate Concept Map Recap
+
+
+
+![Lubridate Concept Map](../images/concept_map.png) 
+
+
+
+
 
 ***
 

@@ -136,9 +136,7 @@ library(readxl)
 * `gapminder`: Gapminder foundation
 * `billboard`: Billboard music charts
 * `relig_income`: Pew research
-* `training_schedule`: Our training schedule:-).
-  
-
+* `training_schedule`: DSC previous training schedule.
 
 ---
 # Projects
@@ -168,6 +166,7 @@ As shown in the example below, where you include all files to a project in the s
 * **scripts** containing all the R script files.
 
 ![](images/level2.PNG)
+
 
 ???
 
@@ -220,9 +219,9 @@ There are a variety of ways of reading data into R:
 
 ```{r}
 
-path <- file.path("../data", "titanic.csv")
+titanic_path <- file.path("../data", "titanic.csv")
 
-titanic <- readr::read_csv(file = path)
+titanic <- readr::read_csv(file = titanic_path)
 
 ```
 
@@ -231,12 +230,11 @@ titanic <- readr::read_csv(file = path)
 
 * Reads excel data into R (both `.xls` and `.xlsx`) formats.
 
-
 ```{r, eval = TRUE}
 
-file_path <- file.path("../data", "police_data.xlsx")
+police_path <- file.path("../data", "police_data.xlsx")
 
-police_data <- readxl::read_excel(path = file_path)
+police_data <- readxl::read_excel(path = police_path)
 
 ```
 
@@ -257,7 +255,7 @@ police_data %>%
 ```{r, eval=TRUE}
 # To find out the excel sheet names from excel file
 
-readxl::excel_sheets(file_path)
+readxl::excel_sheets(police_path)
 ```
 
 
@@ -269,9 +267,8 @@ readxl::excel_sheets(file_path)
 
 ```{r, eval = FALSE}
 
-police_data <- read_excel(
-  path = file_path,
-  _______ = _______)
+police_data <- read_excel(path = police_path,
+                          _______ = _______)
 
 ```
 
@@ -284,7 +281,7 @@ Hint: Look at the help documentation by typing in ?read_excel, is there an argum
 
 ```{r, eval = FALSE}
 
-police_data <- readxl::read_excel(path = file_path, 
+police_data <- readxl::read_excel(path = police_path, 
                                   sheet = 2)
 
 ```
@@ -321,7 +318,7 @@ police_data %>%
 ```{r, eval = TRUE}
 
 
-police_data <- readxl::read_excel(path = file_path,
+police_data <- readxl::read_excel(path = police_path,
                                   sheet = 2, 
                                   range = "A5:AA48")
 
@@ -340,12 +337,12 @@ police_data %>%
 
 ```{r, eval = FALSE}
 
-file_path <- file.path("folder", "file_name.sav")
-read_spss(file_path)
+spss_path <- file.path("folder", "file_name.sav")
+read_spss(spss_path)
 
 
-file_path <- file.path("folder", "file_name.sas7bdat")
-read_sas(file_path)
+sas_path <- file.path("folder", "file_name.sas7bdat")
+read_sas(sas_path)
 ```
 
 * After running `library(haven)` try `?read_sas` and `?read_spss` to find out more.
@@ -359,8 +356,8 @@ As an example we will export the police data we just imported.
 
 ```{r, eval=FALSE}
 
-export_path <- file.path("../data", "test.csv")
-readr::write_csv(police_data, path = export_path)
+police_export_path <- file.path("../data", "test.csv")
+readr::write_csv(police_data, path = police_export_path)
 
 ```
 
@@ -406,6 +403,7 @@ visdat::vis_dat(titanic)
 From the plot above, which column is missing the most information?
 ]
 
+<!-- --JM is there a way to get a higher res version of the image output? -->
 
 
 ---
@@ -483,9 +481,9 @@ titanic %>%
 
 ```{r, message = FALSE}
 
-my_file <- file.path("../data", "gapminder.csv")
+gapminder_path <- file.path("../data", "gapminder.csv")
 
-gapminder <- read_csv(file = my_file)
+gapminder <- read_csv(file = gapminder_path)
 
 ```
 
@@ -495,7 +493,7 @@ gapminder <- read_csv(file = my_file)
 
 ```{r}
 
-gapminder <- clean_names(gapminder)
+gapminder <- janitor::clean_names(gapminder)
 
 names(gapminder)
 
@@ -639,7 +637,7 @@ ggplot(gapminder,
 ---
 # Detecting unusual data
 
-We can look at all the distinct values for a variable using the verb `distinct`. 
+We can use `distinct` to look at the distinct values, e.g. siblings `sibsp`.
 
 ```{r}
 
@@ -711,7 +709,7 @@ titanic %>%
 * If we prefer these values to not get an `NA` then we can use `TRUE ~ missing`
 
 ???
-do this by putting `TRUE` on the left hand side and the catch-all value on the right:
+We do this by putting `TRUE` on the left hand side and the catch-all value on the right:
 
 ---
 # Detecting duplicates
@@ -750,7 +748,7 @@ We can use the function `get_dupes` from the R package `janitor` to identify dup
 ---
 # Removing duplicates
 
-To remove duplicates and included only distinct rows, we can use the verb `distinct`.
+To remove duplicates and include only distinct rows, we can use the verb `distinct`.
 
 ```{r}
 
@@ -777,6 +775,17 @@ titanic_distinct <- titanic %>%
                         distinct(fare, keep.all = TRUE)
 
 dim(titanic_distinct)
+
+```
+---
+# Removing duplicates
+
+* `distinct` can also work with particular columns, e.g. if we wanted to represent only distinct fare types.
+
+
+```{r}
+
+head(titanic_distinct)
 
 ```
 
@@ -894,10 +903,10 @@ billboard %>%
 ???
 Now arranging the data as a table (in a wide-format) is a popular way to collect data as it optimises ease of data entry or ease of comparison. However, this format is not easy to analyse, especially within R which is optimised for vectorised operations (i.e. working with variables in columns).
 
-Luckily there are two handy functions that we can use to **pivot** between the two. We can adjust the shapes of an object in R using the functions `pivot_longer` and `pivot_shorter`.
+Luckily there are two handy functions that we can use to **pivot** between the two. We can adjust the shapes of an object in R using the functions `pivot_longer` and `pivot_wider`.
 
 ---
-# pivot_longer and pivot_shorter
+# pivot_longer and pivot_wider
 
 * `pivot_longer()` makes datasets **longer** by increasing the number of rows and decreasing the number of columns.
 
@@ -934,20 +943,23 @@ We can also add additional arguments. For instance, not every song stays in the 
 
 ```{r}
 
-(billboard_long <- billboard %>% 
+billboard_long <- billboard %>% 
                       pivot_longer(
                           cols = starts_with("wk"), 
                           names_to = "week", 
                           values_to = "rank",
                           values_drop_na = TRUE 
                       )
-)
+
 
 ```
 
 
 ---
 # Reshaping the billboard data
+
+* We may also want `week` to appear as an integer instead of as a character.
+
 
 ```{r}
 
@@ -963,13 +975,12 @@ billboard %>%
 
 ```
 
-* We may also want week to appear as an integer instead of as a character.
 
 
 ---
-# Reshaping: transforming to pivot_shorter
+# Reshaping: transforming to pivot_wider
 
-Now if we want to transform the data back we can do this using `pivot_shorter`
+Now if we want to transform the data back we can do this using `pivot_wider`
 
 ```{r}
 
@@ -1009,7 +1020,7 @@ In this case the column names are character data that contain the income categor
 ```{r, eval = FALSE}
 relig_income %>%
   pivot______(
-    cols = !religion, # all columns by religion
+    cols = !religion, # all columns but religion
     names_to = _____,
     values_to = _______)
 ```
@@ -1121,7 +1132,7 @@ library(lubridate)
 library(readxl)
 ```
 
-* And we'll be working with the dataframe `training_schedule.xlsx` which you might find familiar...
+* And we'll be working with the dataframe `training_schedule.xlsx` which shows a past training programme run with the Caribbean.
 
 ---
 layout: false
@@ -1228,8 +1239,8 @@ Let's take a look at our training schedule
 
 ```{r}
 
-path <- file.path("../data", "training_schedule.xlsx")
-schedule <- read_xlsx(path)
+training_path <- file.path("../data", "training_schedule.xlsx")
+schedule <- read_xlsx(training_path)
 
 schedule <- schedule %>%
               mutate(date = as_datetime(date))
