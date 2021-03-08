@@ -6,6 +6,7 @@ institute: "Data Science Campus, Office for National Statistics"
 date: '`r Sys.Date()`'
 output:
   xaringan::moon_reader:
+    fig_caption: false    
     lib_dir: libs
     seal: false
     css: ["xaringan-themer.css", "gentle-ggplot2.css"]
@@ -60,7 +61,7 @@ class: title-slide, center, bottom
 # `r rmarkdown::metadata$title`
 
 
-```{r, echo=FALSE, out.width=460, fig.align='center'}
+```{r, echo=FALSE, out.width=460, fig.align='center', fig.cap = "Cowboy wrangling messy spreadsheets with a lasso"}
 
 knitr::include_graphics("images/data_cowboy.png")
 
@@ -146,7 +147,7 @@ library(readxl)
 * Future, select **‘Open Project…’** or **‘Recent Projects’** from the File menu.
 
 
-![](images/level1.PNG)
+![A file directory with your project_A.](images/level1.PNG)
 
 
 * Benefit: your working directory will always be set to the project folder -> no need to worry about file paths.
@@ -165,7 +166,7 @@ As shown in the example below, where you include all files to a project in the s
 
 * **scripts** containing all the R script files.
 
-![](images/level2.PNG)
+![A file directory showing a project split into data, images, and script folders.](images/level2.PNG)
 
 
 ???
@@ -290,7 +291,7 @@ police_data <- readxl::read_excel(path = police_path,
 
 ```{r, eval = TRUE, message = FALSE, warning = FALSE}
 
-police_data <- readxl::read_excel(path = file_path, 
+police_data <- readxl::read_excel(path = police_path, 
                                   sheet = "Table P1")
 
 ```
@@ -364,7 +365,7 @@ readr::write_csv(police_data, path = police_export_path)
 ---
 # Tidying and quality-checking data
 
-```{r, echo=FALSE, out.width=700, fig.align='center'}
+```{r, echo=FALSE, out.width=700, fig.align='center', fig.cap="A beaver tidying messy column names in a bucket by passing them through the janitor::clean_names() machine to create tidy column names." }
 
 knitr::include_graphics("images/janitor_clean_names.png")
 
@@ -793,7 +794,7 @@ head(titanic_distinct)
 # Reshaping Data
 
 
-```{r, echo=FALSE, out.width=400, fig.align='center'}
+```{r, echo=FALSE, out.width=400, fig.align='center', fig.cap = "Monsters helping to tidy different coloured data using pivot_wider and pivot_longer"}
 
 knitr::include_graphics("images/tidyr_spread_gather_updated.png")
 
@@ -818,7 +819,7 @@ Tidy data as defined in [*R for Data Science*](https://r4ds.had.co.nz/):
 ---
 # Formatting data in a tidy format
 
-```{r, echo=FALSE, out.width=900, fig.align='center'}
+```{r, echo=FALSE, out.width=900, fig.align='center', fig.cap="The iris data.frame with a green box around the variable sepal_length, a blue box around the first row observation, and a red box around the value 5.1 cm sepal length"}
 
 knitr::include_graphics("images/tidy_iris_example.png")
 
@@ -1100,7 +1101,7 @@ titanic2 %>%
 ---
 # Dates and times with lubridate
 
-```{r, echo=FALSE, out.width=500, fig.align='center'}
+```{r, echo=FALSE, out.width=500, fig.align='center', fig.cap = "Monsters dressed as Marty Mcfly and Dr. Emmett Brown doing time control on dates from the car time machine"}
 
 knitr::include_graphics("images/lubridate.png")
 
@@ -1159,7 +1160,7 @@ Elf Pavlik / CC0 https://commons.wikimedia.org/wiki/File:Blue_Marble_rotating.gi
   * Months, time zones, leap years, and DST
   * The Tzolk'in Mayan calendar had 260 days!
   
-![\Guardian News Headline](images/eu_guardian.png)  
+![Guardian News Headline](images/eu_guardian.png)  
 
 ---
 
@@ -1183,7 +1184,7 @@ Can be built from
 # Parsing dates and times using helpers
 
 
-```{r, echo=FALSE, out.width=600, fig.align='center'}
+```{r, echo=FALSE, out.width=600, fig.align='center', fig.cap = "Monsters in construction uniforms go through a pile of y's, m's, and d's to sort our years, months, and days respectively."}
 
 knitr::include_graphics("images/lubridate_ymd.png")
 
@@ -1383,7 +1384,7 @@ schedule %>%
 
 
 
-![\Concept Map](images/concept_map.png) 
+![Lubridate Concept Map: covering accessors, how dates, times, and date-times are created from strings using helpers, changing time zones using with_tz and force_tz, and more](images/concept_map.png) 
 
 
 ---

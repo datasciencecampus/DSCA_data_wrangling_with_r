@@ -4,6 +4,7 @@ author: Dr. Laurie Baker
 output:
   html_document: 
     theme: united
+    fig.caption: false
     highlight: tango
     toc: yes
     toc_float: yes
@@ -11,7 +12,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 library(kableExtra)
 library(lubridate)
@@ -31,16 +32,16 @@ htmltools::img(src = knitr::image_uri("../images/dsc_logo.png"),
 
   * Learn how to create Projects in RStudio
   * Learn the packages associated with importing and exporting different datasets
-  * Learn to tidying column names with janitor
-  * Learn to visualise missing data with naniar and visdat
-  * Learn to identify and removing duplicates using janitor and dplyr
-  * Learn to detect outliers using dplyr and summary.
-  * Learn to reshape data using pivot_longer and pivot_wider
-  * Learn to arrange data
-  * Learn to unite and separate columns using unite and separate
+  * Learn to tidying column names with `janitor`
+  * Learn to visualise missing data with `naniar` and `visdat`
+  * Learn to identify and removing duplicates using `janitor` and `dplyr`
+  * Learn to detect outliers using `dplyr` and `summary`.
+  * Learn to reshape data using `pivot_longer` and `pivot_wider`
+  * Learn to arrange data using `arrange`
+  * Learn to unite and separate columns using `unite` and `separate`
   
-  * Learn to create and parse datetime objects using lubridate
-  * Learn to adjust the time zone in a date
+  * Learn to create and parse `datetime` objects using `lubridate`
+  * Learn to adjust the time zone in a date using `with_tz`
   
 
 
@@ -69,7 +70,7 @@ As shown in the example below, where you include all files to a project in the s
 
 <br>
 
-![\Organisation of a project using R projects](../images/level1.PNG)
+![Organisation of a project using R projects](../images/level1.PNG)
 
 <br>
 
@@ -83,7 +84,7 @@ Within the folder, it is good practice to further organise your files within fol
 
 <br>
 
-![\Example folder organisation with folders scripts, images, and data](../images/level2.PNG)
+![Example folder organisation with folders scripts, images, and data](../images/level2.PNG)
 
 
 
@@ -97,6 +98,7 @@ Below is a list of the core packages in `tidyverse` and others that we will be u
 * [`ggplot2`](https://ggplot2.tidyverse.org/) - Data Visualisation
 
 We will also be using
+
 * [`readxl`](http://cran.r-rpoject.org/web/packages/readxl/inde.html) - Data Import,
 * [`lubridate`](https://lubridate.tidyverse.org/) - Dates,
 * [`janitor`](https://cran.r-project.org/web/packages/janitor/index.html) - Data Cleaning
@@ -106,7 +108,7 @@ We will also be using
 
 
 
-Other tidyverse packages worth looking into are:
+Other `tidyverse` packages worth looking into are:
 
 * [`stringr`](https://stringr.tidyverse.org/) - Strings Manipulation,
 * [`forcats`](https://forcats.tidyverse.org/) - Factors Manipulation,
@@ -116,17 +118,17 @@ Other tidyverse packages worth looking into are:
 
 Note: The majority of the 'heavy lifting', with respect to data manipulation and exploration, will be done through the functions available through the `tidyverse` libraries. On some occasions, we will be using functions from other libraries.
 
-![\Image showing visual representation of tidyverse packages and workflow](../images/tidyverse.png)
+![Image showing visual representation of tidyverse packages and workflow](../images/tidyverse.png)
 
 For this adventure we'll be using the `tidyverse` meta package in addition to the packages `janitor`, `visdat`, `naniar`, and `lubridate` for data cleaning and working with and visualising missing data.
 
-```{r, messages = FALSE, warning = FALSE}
+```{r, message = FALSE, warning = FALSE}
 #install.packages("tidyverse")
 #install.packages("janitor")
 #install.packages("visdat")
 #install.packages("naniar")
 #install.packages("lubridate")
-#install.pacakges("readxl")
+#install.packages("readxl")
 
 library(tidyverse)
 library(janitor)
@@ -143,7 +145,7 @@ library(readxl)
 
 # Reading in Data
 
-There are a variety of ways of reading data into R. In introduction to R we covered reading in data using the `readr` package. In this course we will go into more depth on how to usee the `readxl` package and `haven` for loading in data from SPSS, Stata, and SAS.
+There are a variety of ways of reading data into R. In Introduction to R we covered reading in data using the `readr` package. In this course we will go into more depth on how to use the `readxl` package and `haven` for loading in data from SPSS, Stata, and SAS.
 
 Beyond these packages, there are also several other options for common file types:
 
@@ -160,7 +162,7 @@ Beyond these packages, there are also several other options for common file type
 
 ## Readr
 
-The package provides a fast and friendly way to read data from *csv* and *tsv* formats, it converts the data into *tibbles*.
+The package provides a fast and friendly way to read data from *csv* and *tsv* formats, it converts the data into a special flavour of dataframe the `tibble`.
 
 For this section we are going to use the **`read_csv()`** function.
 
@@ -187,7 +189,10 @@ dataframe_name <- readr::read_csv(file = file_path)
 
 `readr` will assume that the first row of your data is the headings of the columns.
 
-`readr` will automatically try and guess the data types in your columns, for example; if a column has only numerical data, it will be classed as numeric or if it only contains logical values it will be classed as logical. If the values do not match then R keeps them as characters. It is good practise to check your column data types, just in case R chose the wrong type automatically.
+`readr` will automatically try and guess the data types in your columns. 
+
+* For example, if a column has only numerical data, it will be classed as numeric or if it only contains logical values it will be classed as logical. 
+* If the values do not match then R keeps them as characters. It is good practise to check your column data types, just in case R chose the wrong type automatically.
 
 ***
 
@@ -202,7 +207,7 @@ You will need to change the file path to your location.
 
 You will have noticed that we had some parsing information after reading the file in, displayed at the end of the process (as a warning). This is to let us know the data type  for each column. 
 
-This is not an error and its useful to inspect the chosen datatypes. 
+This is not an error and it is useful to inspect the chosen data types. 
 
 ```{r}
 # Reading in CSV data using readr package and read_csv function
@@ -224,9 +229,9 @@ View(titanic)
 ```
 
 
-## readxl
+## Reading in excel files using readxl
 
-We use readxl to read excel data into R, it supports both `.xls` and `.xlsx` formats.
+We use `readxl` to read excel data into R, it supports both `.xls` and `.xlsx` formats.
 
 
 The code below demonstrates how you can read excel data.
@@ -271,14 +276,14 @@ After reading in the file our data should look like this.
 
 <br>
 
-![](../images/police_data_sheet_1.PNG)
+![Police data spreadsheet 1 showing comments](../images/police_data_sheet_1.PNG)
 
 <br>
 
 This is the first sheet in our excel which is just the `Notes`.
 
 
-If we dont specify which sheet, the default setting from readxl is to give us the first sheet.
+If we don't specify which sheet, the default setting from `readxl` is to give us the first sheet.
 
 <br>
 
@@ -346,11 +351,11 @@ Our file should now look like this,
 
 <br>
 
-![](../images/sheet_2.PNG)
+![Police data spreasheet 2 showing the ](../images/sheet_2.PNG)
 
 <br>
 
-As we can see the top columns are mostly blank with no real significant data, to get around this we can add in a range of columns and rows that have the data we want to analyse. This sorts out the column names as well.
+As we can see the top columns are mostly blank with no real significant data. To get around this we can add in a range of columns and rows that have the data we want to analyse. This sorts out the column names as well.
 
 <br>
 
@@ -429,7 +434,7 @@ names(titanic)
 
 ### Prepping the gapminder data
 
-Let's go back to the gapminder data set we've worked with before. First let's load in the data:
+Let's go back to the `gapminder` data set we've worked with before. First let's load in the data:
 
 ```{r}
 
@@ -447,7 +452,7 @@ gapminder <- read_csv(file = my_file)
 #### **Exercise**{-}
 
 
-Fill in the blanks to tidy up the names of the gapminder code
+Fill in the blanks to tidy up the names of the `gapminder` code
 
 ```{r, eval = FALSE}
 
@@ -475,10 +480,11 @@ We can use the function `clean_names()` from the janitor package
 
 ```{r}
 
-gapminder <- clean_names(gapminder)
+gapminder <- janitor::clean_names(gapminder)
 
 ```
 
+* N.B that `clean_names(gapminder)` is also correct. Specifying the package first e.g. `janitor::clean_names` as it is more precise and avoids mistakes that could arise from function names from the same packages having the same name. 
 
 ***
 
@@ -489,12 +495,12 @@ gapminder <- clean_names(gapminder)
 
 Missing data is a common occurrence in data science. We can use the packages `naniar` and `visdat` to inspect and visualise our missing data. 
 
-These packages can help us to visualise the types of data we have and to also identify where we have missing data. The `visdata` package provides a visualisation of an entire data frame at once. 
+These packages can help us to visualise the types of data we have and to also identify where we have missing data. The `visdat` package provides a visualisation of an entire data frame at once. 
 
 
 ```{r}
 
-vis_dat(titanic)
+visdat::vis_dat(titanic)
 
 ```
 
@@ -518,7 +524,7 @@ From the plot above, which column is missing the most information?
 
 #### **Hint**{-}
 
-Take a look at the legend and then back to the graph. Which column has the most greyed out observations which represent missing data ("NA")? 
+Take a look at the legend and then back to the graph. Which column has the most grayed out observations which represent missing data ("NA")? 
 
 ***
 
@@ -539,7 +545,7 @@ If we want to look at the percentage of data that is missing for each column and
 
 ```{r}
 
-vis_miss(titanic)
+visdat::vis_miss(titanic)
 
 ```
 
@@ -547,14 +553,14 @@ Using `naniar` we can explore missing data further using functions like `gg_miss
 
 ```{r Visualising how many observations are missing}
 
-gg_miss_var(titanic)
+naniar::gg_miss_var(titanic)
 
 ```
 
 
 ### Exploring mechanisms of missing data
 
-We can identifying using `vis_miss` the key variables that are missing data, however it is important to explore the relationship amongst the variables in the dataset. 
+We can identifying using `vis_miss` the key variables that are missing data, however it is important to explore the relationship among the variables in the dataset. 
 
 For example we might wish to explore whether the information we have about cabins is missing for certain fares. We can look to see whether there are any patterns in the data by creating a colour for 
 
@@ -580,7 +586,7 @@ We can visualise what data is missing using
 
 ```{r}
 
-vis_dat(gapminder)
+visdat::vis_dat(gapminder)
 
 ```
 
@@ -702,8 +708,6 @@ The different types of missing have different implications.
 |  MNAR | Will lead to bias   | Will lead to bias   | Neither visual pattern above holds   |
 
 
-<!-- You can then look at a dataset with missing values and evaluate the imputation model. This would involve internal evaluation, comparing distributions with and without imputed values (e.g. Mean, Variance, and Scale) and also external evaluation, where you build a model and then evaluate the impact of the imputation method on Machine Learning model performance.  -->
-
 ## Detecting unusual data
 
 We can look at all the distinct values for a variable using the verb `distinct`. This can help us identify anything unusual or also see what values come up.
@@ -752,14 +756,18 @@ titanic %>%
 
 ```
 
-A few additional notes about the `case_when`, the left-hand side must evaluate to a logical vector (i.e. can the answer to the logical operation be TRUE or FALSE?). The right-hand side does not need to be logical but it must evaluate to the same type of vector (e.g. all characters, or all numeric). When you search online for code examples, you might also see the `recode` and `ifelse` functions used to carry out similar tasks. 
+A few additional notes about the `case_when`: 
+
+* The left-hand side must evaluate to a logical vector (i.e. can the answer to the logical operation be TRUE or FALSE?). 
+
+* The right-hand side does not need to be logical but it must evaluate to the same type of vector (e.g. all characters, or all numeric). When you search online for code examples, you might also see the `recode` and `ifelse` functions used to carry out similar tasks. 
 
 
 ## Detecting duplicates
 
 Duplicates often creep into our datasets when we combine data from sources or can also accidentally occur during data entry. 
 
-We can use the function `get_dupes` from the R package `janitor` to identify duplicates. We need to specify the data frame (`dat`) and then the variable combination to search for dublicates and get back the duplicated rows.
+We can use the function `get_dupes` from the R package `janitor` to identify duplicates. We need to specify the data frame (`dat`) and then the variable combination to search for duplicates and get back the duplicated rows.
 
 
 ```{r}
@@ -774,7 +782,7 @@ Like other functions that follow `tidyverse` principles. We can also use this fu
 ```{r}
 
 mtcars %>%
-  get_dupes(wt)
+  janitor::get_dupes(wt)
 
 ```
 
@@ -856,7 +864,7 @@ In this case the **variables** are
 names(titanic)
 ```
 
-A value would be a single value of one of theese variables, e.g. 
+A value would be a single value of one of these variables, e.g. 
 
 ```{r}
 titanic[1,"name_of_passenger"]
@@ -928,7 +936,7 @@ billboard %>%
 
 ```
 
-We can also add additional arguments. For instance, not every song stays in the charts for all 76 weeks, so the structure of the input data forc the creation of unnecessary explicit `NA`s
+We can also add additional arguments. For instance, not every song stays in the charts for all 76 weeks, so the structure of the input data force the creation of unnecessary explicit `NA`s
 
 
 ```{r}
@@ -954,7 +962,7 @@ billboard %>%
     cols = starts_with("wk"), 
     names_to = "week", 
     names_prefix = "wk", 
-    names_transform = list(week = as.integer),# --JM this line causes the chunk to break on my machine
+    names_transform = list(week = as.integer),
     values_to = "rank",
     values_drop_na = TRUE,
   )
@@ -977,7 +985,7 @@ billboard_long %>%
 ```
 
 
-Let's take a look at another dataset, relig_income. This dataset was gathered by the Pew Research Center and contains the results from surveys of more than 35,000 Americans from all 50 states.
+Let's take a look at another dataset, `relig_income`. This dataset was gathered by the Pew Research Center and contains the results from surveys of more than 35,000 Americans from all 50 states.
 
 ```{r}
 data(relig_income)
@@ -1090,7 +1098,7 @@ titanic2 %>%
 
 # Dates and times with lubridate
 
-```{r, echo=FALSE, out.width=500, fig.align='center'}
+```{r, echo=FALSE, out.width=500, fig.align='center', fig.cap = "Monsters dressed as Marty Mcfly and Dr. Emmett Brown doing time control on dates from the car time machine"}
 
 knitr::include_graphics("../images/lubridate.png")
 
@@ -1111,9 +1119,12 @@ Artwork by @allison_horst
 
 * **Physical phenomena**
 
+```{r, echo=FALSE, out.width=500, fig.align='center', fig.cap = "Picture of the earth as a rotating marble"}
 
-<a title="Elf Pavlik / CC0" href="https://commons.wikimedia.org/wiki/File:Blue_Marble_rotating.gif"><img width="512" alt="Blue Marble rotating" src="https://upload.wikimedia.org/wikipedia/commons/4/45/Blue_Marble_rotating.gif"></a>
-Blue Marble Rotating by Elf Pavlik
+knitr::include_graphics("../images/Blue_Marble_rotating.jpg")
+
+```
+Image: Blue Marble Rotating by Elf Pavlik, Wikimedia Commons
 
     * Rotation of the Earth
     * Earth's orbit around the sun
@@ -1146,7 +1157,7 @@ Can be built from
 ### Parsing dates and times using helpers
 
 
-```{r, echo=FALSE, out.width=600, fig.align='center'}
+```{r, echo=FALSE, out.width=600, fig.align='center', fig.cap = "Monsters in construction uniforms go through a pile of y's, m's, and d's to sort our years, months, and days respectively."}
 
 knitr::include_graphics("../images/lubridate_ymd.png")
 
@@ -1259,7 +1270,7 @@ dmy_hms("03/10/20 15:32:05")
 
 
 
-Times are supplied in `UTC`, the coordinated universal time, unless we specify a time zone (tz). 
+Times are supplied in `UTC`, the coordinated universal time, unless we specify a time zone (`tz`). 
 
 
 ### Dealing with Time Zones
@@ -1290,9 +1301,9 @@ schedule %>% kable() %>%
 
 We can pull out individual parts of a date with the **accessor** functions:
 
-- year, month, day
-- mday, yday, wday
-- hour, minute, second
+- `year`, `month`, `day`
+- `mday`, `yday`, `wday`
+- `hour`, `minute`, `second`
 
 ```{r, eval = FALSE}
 
@@ -1536,7 +1547,7 @@ schedule %>%
 
 
 
-![Lubridate Concept Map](../images/concept_map.png) 
+![Lubridate Concept Map: covering accessors, how dates, times, and date-times are created from strings using helpers, changing time zones using with_tz and force_tz, and more](../images/concept_map.png) 
 
 
 
