@@ -4,7 +4,9 @@
     <title>Data Wrangling in R</title>
     <meta charset="utf-8" />
     <meta name="author" content="Dr. Laurie Baker" />
-    <meta name="date" content="2020-10-02" />
+    <meta name="date" content="2021-03-08" />
+    <link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+    <script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
     <script src="libs/kePrint-0.0.1/kePrint.js"></script>
     <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
     <link href="libs/countdown-0.3.5/countdown.css" rel="stylesheet" />
@@ -29,7 +31,7 @@ class: title-slide, center, bottom
 # Data Wrangling in R
 
 
-&lt;img src="images/data_cowboy.png" width="460" style="display: block; margin: auto;" /&gt;
+&lt;img src="images/data_cowboy.png" title="Cowboy wrangling messy spreadsheets with a lasso" alt="Cowboy wrangling messy spreadsheets with a lasso" width="460" style="display: block; margin: auto;" /&gt;
 
 ### Dr. Laurie Baker
 
@@ -101,9 +103,7 @@ library(readxl)
 * `gapminder`: Gapminder foundation
 * `billboard`: Billboard music charts
 * `relig_income`: Pew research
-* `training_schedule`: Our training schedule:-).
-  
-
+* `training_schedule`: DSC previous training schedule.
 
 ---
 # Projects
@@ -113,7 +113,7 @@ library(readxl)
 * Future, select **‘Open Project…’** or **‘Recent Projects’** from the File menu.
 
 
-![](images/level1.PNG)
+![A file directory with your project_A.](images/level1.PNG)
 
 
 * Benefit: your working directory will always be set to the project folder -&gt; no need to worry about file paths.
@@ -132,7 +132,8 @@ As shown in the example below, where you include all files to a project in the s
 
 * **scripts** containing all the R script files.
 
-![](images/level2.PNG)
+![A file directory showing a project split into data, images, and script folders.](images/level2.PNG)
+
 
 ???
 
@@ -185,9 +186,9 @@ There are a variety of ways of reading data into R:
 
 
 ```r
-path &lt;- file.path("../data", "titanic.csv")
+titanic_path &lt;- file.path("../data", "titanic.csv")
 
-titanic &lt;- readr::read_csv(file = path)
+titanic &lt;- readr::read_csv(file = titanic_path)
 ```
 
 ```
@@ -213,11 +214,10 @@ titanic &lt;- readr::read_csv(file = path)
 * Reads excel data into R (both `.xls` and `.xlsx`) formats.
 
 
-
 ```r
-file_path &lt;- file.path("../data", "police_data.xlsx")
+police_path &lt;- file.path("../data", "police_data.xlsx")
 
-police_data &lt;- readxl::read_excel(path = file_path)
+police_data &lt;- readxl::read_excel(path = police_path)
 ```
 
 
@@ -298,7 +298,7 @@ police_data &lt;- readxl::read_excel(path = file_path)
 ```r
 # To find out the excel sheet names from excel file
 
-readxl::excel_sheets(file_path)
+readxl::excel_sheets(police_path)
 ```
 
 ```
@@ -314,14 +314,13 @@ readxl::excel_sheets(file_path)
 
 
 ```r
-police_data &lt;- read_excel(
-  path = file_path,
-  _______ = _______)
+police_data &lt;- read_excel(path = police_path,
+                          _______ = _______)
 ```
 
 Hint: Look at the help documentation by typing in ?read_excel, is there an argument that talks about "sheet"?
 
-<div class="countdown" id="timer_5f771c66" style="right:0;bottom:0;" data-warnwhen="0">
+<div class="countdown" id="timer_60465075" style="right:0;bottom:0;" data-warnwhen="0">
 <code class="countdown-time"><span class="countdown-digits minutes">05</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div> 
 
@@ -330,7 +329,7 @@ Hint: Look at the help documentation by typing in ?read_excel, is there an argum
 
 
 ```r
-police_data &lt;- readxl::read_excel(path = file_path, 
+police_data &lt;- readxl::read_excel(path = police_path, 
                                   sheet = 2)
 ```
 
@@ -338,7 +337,7 @@ police_data &lt;- readxl::read_excel(path = file_path,
 
 
 ```r
-police_data &lt;- readxl::read_excel(path = file_path, 
+police_data &lt;- readxl::read_excel(path = police_path, 
                                   sheet = "Table P1")
 ```
 
@@ -1930,7 +1929,7 @@ police_data &lt;- readxl::read_excel(path = file_path,
 
 
 ```r
-police_data &lt;- readxl::read_excel(path = file_path,
+police_data &lt;- readxl::read_excel(path = police_path,
                                   sheet = 2, 
                                   range = "A5:AA48")
 ```
@@ -3223,12 +3222,12 @@ police_data &lt;- readxl::read_excel(path = file_path,
 
 
 ```r
-file_path &lt;- file.path("folder", "file_name.sav")
-read_spss(file_path)
+spss_path &lt;- file.path("folder", "file_name.sav")
+read_spss(spss_path)
 
 
-file_path &lt;- file.path("folder", "file_name.sas7bdat")
-read_sas(file_path)
+sas_path &lt;- file.path("folder", "file_name.sas7bdat")
+read_sas(sas_path)
 ```
 
 * After running `library(haven)` try `?read_sas` and `?read_spss` to find out more.
@@ -3242,14 +3241,14 @@ As an example we will export the police data we just imported.
 
 
 ```r
-export_path &lt;- file.path("../data", "test.csv")
-readr::write_csv(police_data, path = export_path)
+police_export_path &lt;- file.path("../data", "test.csv")
+readr::write_csv(police_data, path = police_export_path)
 ```
 
 ---
 # Tidying and quality-checking data
 
-&lt;img src="images/janitor_clean_names.png" width="700" style="display: block; margin: auto;" /&gt;
+&lt;img src="images/janitor_clean_names.png" title="A beaver tidying messy column names in a bucket by passing them through the janitor::clean_names() machine to create tidy column names." alt="A beaver tidying messy column names in a bucket by passing them through the janitor::clean_names() machine to create tidy column names." width="700" style="display: block; margin: auto;" /&gt;
 Artwork by @allison_horst
 
 ---
@@ -3297,6 +3296,7 @@ visdat::vis_dat(titanic)
 From the plot above, which column is missing the most information?
 ]
 
+&lt;!-- --JM is there a way to get a higher res version of the image output? --&gt;
 
 
 ---
@@ -3372,9 +3372,9 @@ titanic %&gt;%
 
 
 ```r
-my_file &lt;- file.path("../data", "gapminder.csv")
+gapminder_path &lt;- file.path("../data", "gapminder.csv")
 
-gapminder &lt;- read_csv(file = my_file)
+gapminder &lt;- read_csv(file = gapminder_path)
 ```
 
 --
@@ -3383,7 +3383,7 @@ gapminder &lt;- read_csv(file = my_file)
 
 
 ```r
-gapminder &lt;- clean_names(gapminder)
+gapminder &lt;- janitor::clean_names(gapminder)
 
 names(gapminder)
 ```
@@ -3535,7 +3535,7 @@ ggplot(gapminder,
 ---
 # Detecting unusual data
 
-We can look at all the distinct values for a variable using the verb `distinct`. 
+We can use `distinct` to look at the distinct values, e.g. siblings `sibsp`.
 
 
 ```r
@@ -3656,7 +3656,7 @@ titanic %&gt;%
 * If we prefer these values to not get an `NA` then we can use `TRUE ~ missing`
 
 ???
-do this by putting `TRUE` on the left hand side and the catch-all value on the right:
+We do this by putting `TRUE` on the left hand side and the catch-all value on the right:
 
 ---
 # Detecting duplicates
@@ -3708,7 +3708,7 @@ We can use the function `get_dupes` from the R package `janitor` to identify dup
 ---
 # Removing duplicates
 
-To remove duplicates and included only distinct rows, we can use the verb `distinct`.
+To remove duplicates and include only distinct rows, we can use the verb `distinct`.
 
 
 ```r
@@ -3755,12 +3755,34 @@ dim(titanic_distinct)
 ```
 ## [1] 282   2
 ```
+---
+# Removing duplicates
+
+* `distinct` can also work with particular columns, e.g. if we wanted to represent only distinct fare types.
+
+
+
+```r
+head(titanic_distinct)
+```
+
+```
+## # A tibble: 6 x 2
+##    fare keep.all
+##   &lt;dbl&gt; &lt;lgl&gt;   
+## 1 211.  TRUE    
+## 2 152.  TRUE    
+## 3  26.6 TRUE    
+## 4  78.0 TRUE    
+## 5   0   TRUE    
+## 6  51.5 TRUE
+```
 
 ---
 # Reshaping Data
 
 
-&lt;img src="images/tidyr_spread_gather_updated.png" width="400" style="display: block; margin: auto;" /&gt;
+&lt;img src="images/tidyr_spread_gather_updated.png" title="Monsters helping to tidy different coloured data using pivot_wider and pivot_longer" alt="Monsters helping to tidy different coloured data using pivot_wider and pivot_longer" width="400" style="display: block; margin: auto;" /&gt;
 Artwork by @allison_horst
 
 ---
@@ -3781,7 +3803,7 @@ Tidy data as defined in [*R for Data Science*](https://r4ds.had.co.nz/):
 ---
 # Formatting data in a tidy format
 
-&lt;img src="images/tidy_iris_example.png" width="900" style="display: block; margin: auto;" /&gt;
+&lt;img src="images/tidy_iris_example.png" title="The iris data.frame with a green box around the variable sepal_length, a blue box around the first row observation, and a red box around the value 5.1 cm sepal length" alt="The iris data.frame with a green box around the variable sepal_length, a blue box around the first row observation, and a red box around the value 5.1 cm sepal length" width="900" style="display: block; margin: auto;" /&gt;
 
 ---
 # Exercise
@@ -3792,7 +3814,7 @@ Take a look at the titanic data.
 * What is an example of a value?
 * What are the observations?
 
-<div class="countdown" id="timer_5f771b88" style="right:0;bottom:0;" data-warnwhen="0">
+<div class="countdown" id="timer_6046541c" style="right:0;bottom:0;" data-warnwhen="0">
 <code class="countdown-time"><span class="countdown-digits minutes">05</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div> 
 
@@ -3880,7 +3902,7 @@ titanic %&gt;%
 
 
 
-Let's go back 20 years, and take a look at the top billboard top 100 charts in the USA from the year 2000. 
+Let's go back 21 years, and take a look at the top billboard top 100 charts in the USA from the year 2000. 
 
 
 ```r
@@ -29656,10 +29678,10 @@ data(billboard)
 ???
 Now arranging the data as a table (in a wide-format) is a popular way to collect data as it optimises ease of data entry or ease of comparison. However, this format is not easy to analyse, especially within R which is optimised for vectorised operations (i.e. working with variables in columns).
 
-Luckily there are two handy functions that we can use to **pivot** between the two. We can adjust the shapes of an object in R using the functions `pivot_longer` and `pivot_shorter`.
+Luckily there are two handy functions that we can use to **pivot** between the two. We can adjust the shapes of an object in R using the functions `pivot_longer` and `pivot_wider`.
 
 ---
-# pivot_longer and pivot_shorter
+# pivot_longer and pivot_wider
 
 * `pivot_longer()` makes datasets **longer** by increasing the number of rows and decreasing the number of columns.
 
@@ -29712,36 +29734,21 @@ We can also add additional arguments. For instance, not every song stays in the 
 
 
 ```r
-(billboard_long &lt;- billboard %&gt;% 
+billboard_long &lt;- billboard %&gt;% 
                       pivot_longer(
                           cols = starts_with("wk"), 
                           names_to = "week", 
                           values_to = "rank",
                           values_drop_na = TRUE 
                       )
-)
-```
-
-```
-## # A tibble: 5,307 x 5
-##    artist  track                   date.entered week   rank
-##    &lt;chr&gt;   &lt;chr&gt;                   &lt;date&gt;       &lt;chr&gt; &lt;dbl&gt;
-##  1 2 Pac   Baby Don't Cry (Keep... 2000-02-26   wk1      87
-##  2 2 Pac   Baby Don't Cry (Keep... 2000-02-26   wk2      82
-##  3 2 Pac   Baby Don't Cry (Keep... 2000-02-26   wk3      72
-##  4 2 Pac   Baby Don't Cry (Keep... 2000-02-26   wk4      77
-##  5 2 Pac   Baby Don't Cry (Keep... 2000-02-26   wk5      87
-##  6 2 Pac   Baby Don't Cry (Keep... 2000-02-26   wk6      94
-##  7 2 Pac   Baby Don't Cry (Keep... 2000-02-26   wk7      99
-##  8 2Ge+her The Hardest Part Of ... 2000-09-02   wk1      91
-##  9 2Ge+her The Hardest Part Of ... 2000-09-02   wk2      87
-## 10 2Ge+her The Hardest Part Of ... 2000-09-02   wk3      92
-## # ... with 5,297 more rows
 ```
 
 
 ---
 # Reshaping the billboard data
+
+* We may also want `week` to appear as an integer instead of as a character.
+
 
 
 ```r
@@ -29773,13 +29780,12 @@ billboard %&gt;%
 ## # ... with 5,297 more rows
 ```
 
-* We may also want week to appear as an integer instead of as a character.
 
 
 ---
-# Reshaping: transforming to pivot_shorter
+# Reshaping: transforming to pivot_wider
 
-Now if we want to transform the data back we can do this using `pivot_shorter`
+Now if we want to transform the data back we can do this using `pivot_wider`
 
 
 ```r
@@ -30090,7 +30096,7 @@ In this case the column names are character data that contain the income categor
 ```r
 relig_income %&gt;%
   pivot______(
-    cols = !religion, # all columns by religion
+    cols = !religion, # all columns but religion
     names_to = _____,
     values_to = _______)
 ```
@@ -30237,7 +30243,7 @@ titanic2 %&gt;%
 ---
 # Dates and times with lubridate
 
-&lt;img src="images/lubridate.png" width="500" style="display: block; margin: auto;" /&gt;
+&lt;img src="images/lubridate.png" title="Monsters dressed as Marty Mcfly and Dr. Emmett Brown doing time control on dates from the car time machine" alt="Monsters dressed as Marty Mcfly and Dr. Emmett Brown doing time control on dates from the car time machine" width="500" style="display: block; margin: auto;" /&gt;
 Artwork by @allison_horst
 
 ---
@@ -30266,7 +30272,7 @@ library(lubridate)
 library(readxl)
 ```
 
-* And we'll be working with the dataframe `training_schedule.xlsx` which you might find familiar...
+* And we'll be working with the dataframe `training_schedule.xlsx` which shows a past training programme run with the Caribbean.
 
 ---
 layout: false
@@ -30293,7 +30299,7 @@ Elf Pavlik / CC0 https://commons.wikimedia.org/wiki/File:Blue_Marble_rotating.gi
   * Months, time zones, leap years, and DST
   * The Tzolk'in Mayan calendar had 260 days!
   
-![\Guardian News Headline](images/eu_guardian.png)  
+![Guardian News Headline](images/eu_guardian.png)  
 
 ---
 
@@ -30317,7 +30323,7 @@ Can be built from
 # Parsing dates and times using helpers
 
 
-&lt;img src="images/lubridate_ymd.png" width="600" style="display: block; margin: auto;" /&gt;
+&lt;img src="images/lubridate_ymd.png" title="Monsters in construction uniforms go through a pile of y's, m's, and d's to sort our years, months, and days respectively." alt="Monsters in construction uniforms go through a pile of y's, m's, and d's to sort our years, months, and days respectively." width="600" style="display: block; margin: auto;" /&gt;
 
 Artwork by @allison_horst
 
@@ -30370,8 +30376,8 @@ Let's take a look at our training schedule
 
 
 ```r
-path &lt;- file.path("../data", "training_schedule.xlsx")
-schedule &lt;- read_xlsx(path)
+training_path &lt;- file.path("../data", "training_schedule.xlsx")
+schedule &lt;- read_xlsx(training_path)
 
 schedule &lt;- schedule %&gt;%
               mutate(date = as_datetime(date))
@@ -30506,7 +30512,7 @@ schedule %&gt;%
 
 
 
-![\Concept Map](images/concept_map.png) 
+![Lubridate Concept Map: covering accessors, how dates, times, and date-times are created from strings using helpers, changing time zones using with_tz and force_tz, and more](images/concept_map.png) 
 
 
 ---

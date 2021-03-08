@@ -4,6 +4,7 @@ author: Dr. Laurie Baker
 output:
   html_document: 
     theme: united
+    fig.caption: false
     highlight: tango
     toc: yes
     toc_float: yes
@@ -69,7 +70,7 @@ As shown in the example below, where you include all files to a project in the s
 
 <br>
 
-![\Organisation of a project using R projects](../images/level1.PNG)
+![Organisation of a project using R projects](../images/level1.PNG)
 
 <br>
 
@@ -83,7 +84,7 @@ Within the folder, it is good practice to further organise your files within fol
 
 <br>
 
-![Image: Example folder organisation with folders scripts, images, and data](../images/level2.PNG)
+![Example folder organisation with folders scripts, images, and data](../images/level2.PNG)
 
 
 
@@ -117,7 +118,7 @@ Other `tidyverse` packages worth looking into are:
 
 Note: The majority of the 'heavy lifting', with respect to data manipulation and exploration, will be done through the functions available through the `tidyverse` libraries. On some occasions, we will be using functions from other libraries.
 
-![\Image showing visual representation of tidyverse packages and workflow](../images/tidyverse.png)
+![Image showing visual representation of tidyverse packages and workflow](../images/tidyverse.png)
 
 For this adventure we'll be using the `tidyverse` meta package in addition to the packages `janitor`, `visdat`, `naniar`, and `lubridate` for data cleaning and working with and visualising missing data.
 
@@ -275,7 +276,7 @@ After reading in the file our data should look like this.
 
 <br>
 
-![](../images/police_data_sheet_1.PNG)
+![Police data spreadsheet 1 showing comments](../images/police_data_sheet_1.PNG)
 
 <br>
 
@@ -350,7 +351,7 @@ Our file should now look like this,
 
 <br>
 
-![](../images/sheet_2.PNG)
+![Police data spreasheet 2 showing the ](../images/sheet_2.PNG)
 
 <br>
 
@@ -1097,7 +1098,7 @@ titanic2 %>%
 
 # Dates and times with lubridate
 
-```{r, echo=FALSE, out.width=500, fig.align='center'}
+```{r, echo=FALSE, out.width=500, fig.align='center', fig.cap = "Monsters dressed as Marty Mcfly and Dr. Emmett Brown doing time control on dates from the car time machine"}
 
 knitr::include_graphics("../images/lubridate.png")
 
@@ -1118,7 +1119,7 @@ Artwork by @allison_horst
 
 * **Physical phenomena**
 
-```{r, echo=FALSE, out.width=500, fig.align='center'}
+```{r, echo=FALSE, out.width=500, fig.align='center', fig.cap = "Picture of the earth as a rotating marble"}
 
 knitr::include_graphics("../images/Blue_Marble_rotating.jpg")
 
@@ -1156,7 +1157,7 @@ Can be built from
 ### Parsing dates and times using helpers
 
 
-```{r, echo=FALSE, out.width=600, fig.align='center'}
+```{r, echo=FALSE, out.width=600, fig.align='center', fig.cap = "Monsters in construction uniforms go through a pile of y's, m's, and d's to sort our years, months, and days respectively."}
 
 knitr::include_graphics("../images/lubridate_ymd.png")
 
@@ -1546,7 +1547,7 @@ schedule %>%
 
 
 
-![Lubridate Concept Map](../images/concept_map.png) 
+![Lubridate Concept Map: covering accessors, how dates, times, and date-times are created from strings using helpers, changing time zones using with_tz and force_tz, and more](../images/concept_map.png) 
 
 
 
