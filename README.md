@@ -1,4 +1,4 @@
-# R Repo Template
+# Data Wrangling with R
 
 ### Version 1.0
 
@@ -63,5 +63,21 @@ Intermediate
 **Pre requisite summary** 
 
 Introduction to R
+
+# Slides and Exercises
+
+<img src="slides/images/dplyr_wrangling.png" alt = "Cowboy wrangling messy data with a lasso" height="500px" />
+
+Artwork by @AllisonHorst
+
+
+## Course Instructions
+
+Follow the independent learning [tutorial](independent-learning-tutorial/data_wrangling_with_R.html). Or the [slides](slides/data_wrangling_slides.html) and complete the [exercises](exercises/data_wrangling_with_R_exercises.Rmd).
+
+To view the presenter notes in the slides, type 'p'. If you would like to edit or adapt the slides you will need to install the package [Xaringan](https://bookdown.org/yihui/rmarkdown/xaringan-start.html) and follow the instructions in the link.
+
+
+
 
 
