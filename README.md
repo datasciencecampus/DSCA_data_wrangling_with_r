@@ -73,6 +73,8 @@ Artwork by @AllisonHorst
 
 ## Course Instructions
 
+Access the [Course website on Github Pages](https://datasciencecampus.github.io/DSCA_data_wrangling_with_r/).
+
 Follow the independent learning [tutorial](independent-learning-tutorial/data_wrangling_with_R.html). Or the [slides](slides/data_wrangling_slides.html) and complete the [exercises](exercises/data_wrangling_with_R_exercises.Rmd).
 
 To view the presenter notes in the slides, type 'p'. If you would like to edit or adapt the slides you will need to install the package [Xaringan](https://bookdown.org/yihui/rmarkdown/xaringan-start.html) and follow the instructions in the link.
