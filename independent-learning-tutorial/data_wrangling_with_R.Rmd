@@ -1134,7 +1134,7 @@ Image: Blue Marble Rotating by Elf Pavlik, Wikimedia Commons
     * Months, time zones, leap years, and DST
     * The Tzolk'in Mayan calendar had 260 days!
   
-![Guardian News Headline](../images/eu_guardian.png)  
+![Guardian News Headline](../images/EU_guardian.PNG)  
 
 
 
@@ -1547,7 +1547,7 @@ schedule %>%
 
 
 
-![Lubridate Concept Map: covering accessors, how dates, times, and date-times are created from strings using helpers, changing time zones using with_tz and force_tz, and more](../images/concept_map.png) 
+![Lubridate Concept Map: covering accessors, how dates, times, and date-times are created from strings using helpers, changing time zones using with_tz and force_tz, and more](../images/concept_map.PNG) 
 
 
 
